@@ -245,7 +245,7 @@ module.exports = function (grunt) {
             },
             live: {
               options: {
-                remote: 'git@github.com:storiesofsolidarity/website-frontend.git',
+                remote: 'git@github.com:spencermathews/website-frontend.git',
                 branch: 'gh-pages',
               }
             },
