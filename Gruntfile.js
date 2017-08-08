@@ -201,7 +201,6 @@ module.exports = function (grunt) {
                         'styles/fonts/{,*/}*.*',
                         'scripts/map/*.json',
                         'scripts/splash/*.json',
-                        'CNAME',
                         '.nojekyll'
                     ]
                 }, {
