@@ -35,7 +35,7 @@ Now compile and serve the site locally. This will watch for changes as you make 
 $ grunt serve --watch
 ```
 
-You may also want to run the [data-api](https://github.com/storiesofsolidarity/data-api) (&larr; DEAD LINK) and [us-data](https://github.com/storiesofsolidarity/us-data) servers locally for a complete development stack. If you don't, comment out the `Solidarity.apiRoot` and `dataRoot` settings in `index.html` to use the production endpoints.
+You may also want to run the [story-database](https://github.com/storiesofsolidarity/story-database) and [us-data](https://github.com/storiesofsolidarity/us-data) servers locally for a complete development stack. If you don't, comment out the `Solidarity.apiRoot` and `dataRoot` settings in `index.html` to use the production endpoints.
 
 To add new icons to the custom font, put the SVG file in `/app/images/icons` and re-run `fontcustom compile` from the repository root.
 
