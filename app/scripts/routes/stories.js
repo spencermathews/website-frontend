@@ -21,12 +21,19 @@ Solidarity.Routers = Solidarity.Routers || {};
             storyListLocation: {}
         },
 
+        /*
+         * Parameters are effective when they are in path
+         * Still not clear how the scale/lat/lon are put into the path!
+         * @param {string} state_name optional
+         * @param {string} county_name optional
+         */
         storyMap: function(state_name, county_name) {
             var storyMap = this.cached.storyMap;
             if (storyMap === undefined) { storyMap = new Solidarity.Views.StoryMap(); }
             Solidarity.mainContent.show(storyMap, '#/map');
 
             // load geometry callbacks
+            /* WTF DOES THE data() CALL DO? shouldn't data have a parameter?*/
             if (state_name) {
                 Backbone.listenToOnce(storyMap, 'render-states', function() {
                     var state = d3.selectAll('g.country .feature.state').filter(function(d) {

@@ -263,6 +263,10 @@ module.exports = function (grunt) {
         grunt.file.write('.tmp/scripts/templates.js', 'this.JST = this.JST || {};');
     });
 
+    /*
+     * server is now connect?
+     * https://stackoverflow.com/questions/11943212/whats-the-purpose-of-gruntjs-server-task
+     */
     grunt.registerTask('server', function (target) {
         grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
         grunt.task.run(['serve' + (target ? ':' + target : '')]);

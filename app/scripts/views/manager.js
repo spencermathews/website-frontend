@@ -1,5 +1,8 @@
 /*global Solidarity, Backbone, $ */
 
+/*
+ * Instantiated as mainContent in Solidarity.init (main.js)
+ */
 // RegionManager from https://lostechies.com/derickbailey/2011/12/12/composite-js-apps-regions-and-region-managers/
 Solidarity.RegionManager = (function (Backbone, $) {
     'use strict';
@@ -21,11 +24,14 @@ Solidarity.RegionManager = (function (Backbone, $) {
         }
     };
  
+    /*
+     * 
+     */
     var openView = function (view) {
         freshView = false;
 
         var renderView = function() {
-            var content = view.render(view.options);
+            var content = view.render(view.options); /*render is defined in BaseView but redefined in other views, but not StoryMap which instead has renderStoryCollection for some reason*/
             if (content && content.$el) {
                 content.$el.appendTo(el);
                 content.delegateEvents();
@@ -38,6 +44,9 @@ Solidarity.RegionManager = (function (Backbone, $) {
         });
     };
  
+    /*
+     * Called for example by Routers.Stories.StoryMap 
+     */
     region.show = function (view, navButton, footerLink) {
         closeView(currentView);
         currentView = view;

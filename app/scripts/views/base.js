@@ -14,6 +14,9 @@ Solidarity.Views = Solidarity.Views || {};
             //Solidarity.log('initalize '+this.cid);
         },
 
+        /*
+         * Applies template, some derived classes override, some do so totally redundantly
+         */
         render: function () {
             this.$el.html(this.template());
             return this;

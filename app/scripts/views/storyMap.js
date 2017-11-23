@@ -31,10 +31,15 @@ Math.log2 = Math.log2 || function(x) {
             this.colorList = ['#E4E4E4','#F3EB99','#FAC85F','#F9A946','#EC913D'];
         },
         
+        /*
+         * Called by RegionManager.openView
+         * ? seems to make api call every time, is there a way to optimize?
+         */
         onShow: function() {
             var self = this;
 
             this.drawMap();
+            /* Fetches state data using API */
             this.states.fetch({
                 success: function(data) {
                     // do initial render
@@ -69,6 +74,9 @@ Math.log2 = Math.log2 || function(x) {
             // coords not within map projection
         },
 
+        /*
+         *
+         */
         drawMap: function () {
             var self = this,
                 width = this.width,
@@ -80,7 +88,8 @@ Math.log2 = Math.log2 || function(x) {
             this.colorUnselected = '#E4E4E4';
 
             // map projection, Albers US & puerto rico
-            var projection = d3.geo.albersUsaPr()
+            //var projection = d3.geo.albersUsaPr()
+            var projection = d3.geo.orthographic()
                 .scale(width) // full width of screen
                 .translate([width / 2, height / 2]); // centered
             var path = d3.geo.path()
@@ -235,6 +244,9 @@ Math.log2 = Math.log2 || function(x) {
                   .attr('r', function() { return 8 / e.scale; });
             }
 
+            /*
+             *
+             */
             function saveMapStateToHash() {
               // save loaded geometries like #map/state/county
               if (self.doneRendering) {
@@ -412,6 +424,7 @@ Math.log2 = Math.log2 || function(x) {
             }
 
             function drawStates(error, data) {
+                Solidarity.log('drawStates', data);
                 if (error) { Solidarity.error(error, 'error in drawStates'); return false; }
 
                 var us = self.map.append('g')
@@ -444,6 +457,9 @@ Math.log2 = Math.log2 || function(x) {
                   .attr('d', path);
             }
 
+            /*
+             *
+             */
             function drawCounties(error, data) {
                 Solidarity.log('drawCounties', data);
                 if (error) { Solidarity.error(error, 'error in drawCounties'); return false; }
@@ -499,7 +515,7 @@ Math.log2 = Math.log2 || function(x) {
                 var stateName = state[0][0].id; // ugly hack to get id from svg element
 
                 self.locations.queryParams = {'state_name': stateName};
-                self.locations.getFirstPage({
+                self.locations.getFirstPage({ /* ? */
                     success: function(results) {
 
                         var locations = state.append('g')
@@ -575,15 +591,28 @@ Math.log2 = Math.log2 || function(x) {
             }             
         },
 
+        /*
+         * Not called anywhere!
+         */
         hoverGeometry: function(geom) {
             // save hovered geometry to map context
             this.hoveredGeom = geom;
             
         },
 
+        /**
+         * Called only internally, from onShow:, and from drawMap: by zoomReset(), drawCounties(), and drawLocations()
+
+         * @param {string} type could be 'states', 'counties', or 'locations'
+         * @param {Backbone.Collection} collection
+         * @param {string} geomSelector
+         * @param {string} geomUnselector
+         *
+         * 
+         */
         renderStoryCollection: function(type, collection, geomSelector, geomUnselector) {
             // trigger render event by type
-            this.trigger('render-'+type);
+            this.trigger('render-'+type); /* See Routers.Stories.storyMap where these callbacks are defined, but I can't seem to find a callback for render-location!? */
 
             // extract model attributes from the backbone collection
             var stories = collection.models.map(function(s) { return s.attributes; });
