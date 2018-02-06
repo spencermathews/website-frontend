@@ -21,8 +21,10 @@ var style = new ol.style.Style({
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
+    // will require work to get this one working, probably because of projection? but even this does not have names!?
+    // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
     format: new ol.format.TopoJSON({
-      layers: ['states']
+      layers: ["states"]
       // layers: ["counties"]
     }),
     overlaps: false
@@ -30,18 +32,41 @@ var vectorLayer = new ol.layer.Vector({
   style: function(feature) {
     style.getText().setText(feature.get("name"));
     return style;
-  }
+  },
+  minResolution: 2000,
+  maxResolution: 20000
+});
+
+var countyLayer = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
+    // will require work to get this one working, probably because of projection? but even this does not have names!?
+    // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
+    format: new ol.format.TopoJSON({
+      // layers: ["states"]
+      layers: ["counties"]
+    }),
+    overlaps: false
+  }),
+  style: function(feature) {
+    style.getText().setText(feature.get("name"));
+    return style;
+  },
+  minResolution: 200,
+  maxResolution: 2000
 });
 
 var map = new ol.Map({
   target: "map",
   layers: [
-    vectorLayer,
+    // vectorLayer,
     new ol.layer.Tile({
       source: new ol.source.Stamen({
         layer: "toner"
       })
-    })
+    }),
+    vectorLayer,
+    countyLayer
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([-95.867, 37.963]),
@@ -112,4 +137,8 @@ map.on("pointermove", function(evt) {
 
 map.on("click", function(evt) {
   displayFeatureInfo(evt.pixel);
+  
+  console.log(map.getView().getResolution());
 });
+
+
