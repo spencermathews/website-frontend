@@ -137,8 +137,6 @@ map.on("pointermove", function(evt) {
 
 map.on("click", function(evt) {
   displayFeatureInfo(evt.pixel);
-  
+
   console.log(map.getView().getResolution());
 });
-
-
