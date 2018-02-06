@@ -24,7 +24,8 @@ var vectorLayer = new ol.layer.Vector({
     format: new ol.format.TopoJSON({
       layers: ['states']
       // layers: ["counties"]
-    })
+    }),
+    overlaps: false
   }),
   style: function(feature) {
     style.getText().setText(feature.get("name"));
