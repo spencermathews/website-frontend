@@ -105,17 +105,33 @@ var featureOverlay = new ol.layer.Vector({
 
 var highlight;
 var displayFeatureInfo = function(pixel) {
+  // test
+  // for some reason when the featureOverlay is displayed then the foreach feature at pixel
+  let x = 0;
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    console.log("id:", feature.getId()); // debug
+    console.log("properties:", layer.getProperties());
+    // console.log(layer.getSource());
+    x++;
+  });
+  console.log(x);
+
+  // may need better logic with multiple layers!
+  // this does not seem to pick up layers other than the feature layer!
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
 
-  var info = document.getElementById("info");
-  if (feature) {
-    info.innerHTML = feature.getId() + ": " + feature.get("name");
-  } else {
-    info.innerHTML = "&nbsp;";
-  }
+  // unimplemented
+  // var info = document.getElementById("info");
+  // if (feature) {
+  //   info.innerHTML = feature.getId() + ": " + feature.get("name");
+  // } else {
+  //   info.innerHTML = "&nbsp;";
+  // }
 
+  // note this is done on featureOverlay layer
+  // review more examples to see if this is the best way to to it!
   if (feature !== highlight) {
     if (highlight) {
       featureOverlay.getSource().removeFeature(highlight);
@@ -131,12 +147,44 @@ map.on("pointermove", function(evt) {
   if (evt.dragging) {
     return;
   }
+  // more verbose was probably just for example, but look into
   var pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
+  // displayFeatureInfo(evt.pixel); // why wasn't this done this way originally, seems to work!?
+
+  console.log("map fired pointermove");
 });
 
 map.on("click", function(evt) {
   displayFeatureInfo(evt.pixel);
-  
+
+  console.log("map fired click");
   console.log(map.getView().getResolution()); // debug?
 });
+
+// test
+// https://openlayersbook.github.io/ch09-taking-control-of-controls/example-03.html
+// https://openlayers.org/en/latest/examples/mouse-position.html
+var mousePosition = new ol.control.MousePosition({
+  coordinateFormat: ol.coordinate.createStringXY(2),
+  projection: "EPSG:4326"
+  // target: document.getElementById("myposition"),
+  // undefinedHTML: "&nbsp;"
+});
+map.addControl(mousePosition); // can also .extend() the map controls collection
+
+// //test
+// map.getView().on("change:resolution", function(evt) {
+//   console.log("view fired change:resolution");
+//   var pixel = map.getEventPixel(evt.originalEvent);
+//   displayFeatureInfo(pixel);
+//   // displayFeatureInfo(evt.pixel);
+// });
+
+// //test
+// map.once("moveend", function(evt) {
+//   console.log("map fired moveend");
+//   var pixel = map.getEventPixel(evt.originalEvent);
+//   displayFeatureInfo(pixel);
+//   // displayFeatureInfo(evt.pixel);
+// });
