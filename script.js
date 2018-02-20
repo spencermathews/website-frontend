@@ -1,3 +1,5 @@
+// why does DoubleClickZoom not work as in https://openlayers.org/en/latest/examples/select-features.html
+
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
     color: "rgba(255, 255, 255, 0.6)"
@@ -148,6 +150,7 @@ map.on("pointermove", function(evt) {
 
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
+// note: the mere presence of this event prevents the default DoubleClickZoom interaction, is there a way to preserve it? maybe raise the event again?
 map.on("click", function(evt) {
   // displayFeatureInfo(evt.pixel);
 
