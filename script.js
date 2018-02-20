@@ -53,7 +53,7 @@ var countyLayer = new ol.layer.Vector({
     return style;
   },
   minResolution: 200,
-  maxResolution: 4000
+  maxResolution: 2000
 });
 
 var map = new ol.Map({
@@ -103,23 +103,9 @@ var featureOverlay = new ol.layer.Vector({
   }
 });
 
+// unused!
 var highlight;
 var displayFeatureInfo = function(pixel) {
-  // test
-  // for some reason when the featureOverlay is displayed then the foreach feature at pixel
-  let x = 0;
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
-    console.log("id:", feature.getId()); // debug
-    console.log("properties:", layer.getProperties());
-    // console.log(layer.getSource());
-    x++;
-  });
-  console.log(x);
-
-  console.log("pixel", pixel);
-  console.log(map.getFeaturesAtPixel(pixel));
-  console.log(map.getCoordinateFromPixel(pixel));
-
   // may need better logic with multiple layers!
   // this does not seem to pick up layers other than the feature layer!
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
@@ -147,6 +133,7 @@ var displayFeatureInfo = function(pixel) {
   }
 };
 
+// unused!
 map.on("pointermove", function(evt) {
   if (evt.dragging) {
     return;
@@ -197,24 +184,23 @@ map.on("click", function(evt) {
     map.getPixelFromCoordinate(evt.coordinate)
   );
 
-  let features = map.getFeaturesAtPixel(pixel);
-  console.log(features.length, features);
-
   let x = 0;
   var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     console.log("id:", feature.getId()); // debug
-    x++;
-  });
-  console.log("#features", x);
-
-  x = 0;
-  var feature = map.forEachLayerAtPixel(pixel, function(layer) {
-    console.log("layer", layer);
-    // console.log("properties:", layer.getProperties());
+    console.log("properties:", layer.getProperties());
     // console.log(layer.getSource());
     x++;
   });
-  console.log("#layers", x);
+  console.log(x);
+
+  var feature = map.forEachLayerAtPixel(pixel, function(feature, pixel) {
+    console.log("id:", feature.getId()); // debug
+    console.log("properties:", layer.getProperties());
+    // console.log(layer.getSource());
+    x++;
+  });
+
+  console.log(map.getFeaturesAtPixel(pixel));
 });
 
 // test
