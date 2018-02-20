@@ -116,6 +116,10 @@ var displayFeatureInfo = function(pixel) {
   });
   console.log(x);
 
+  console.log("pixel", pixel);
+  console.log(map.getFeaturesAtPixel(pixel));
+  console.log(map.getCoordinateFromPixel(pixel));
+
   // may need better logic with multiple layers!
   // this does not seem to pick up layers other than the feature layer!
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
@@ -149,29 +153,73 @@ map.on("pointermove", function(evt) {
   }
   // more verbose was probably just for example, but look into
   var pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  // displayFeatureInfo(pixel);
   // displayFeatureInfo(evt.pixel); // why wasn't this done this way originally, seems to work!?
 
-  console.log("map fired pointermove");
+  // console.log("map fired pointermove");
 });
 
+// click fires ol.MapBrowserEvent
+// ? where the hell is documentation for the arg to listener function?
 map.on("click", function(evt) {
-  displayFeatureInfo(evt.pixel);
+  // displayFeatureInfo(evt.pixel);
 
   console.log("map fired click");
-  console.log(map.getView().getResolution()); // debug?
+  console.log("resolution:", map.getView().getResolution()); // debug?
+
+  //debug...
+  // evt is ol.MapBrowserEvent
+  console.log("evt", typeof evt, evt);
+  // evt.originalEvent is the browser event like MouseEvent
+  console.log("evt.originalEvent", typeof evt.originalEvent, evt.originalEvent);
+
+  console.log("pixel", evt.pixel);
+  // map.getEventPixel() arg is browser event
+  console.log(
+    "map.getEventPixel(evt.originalEvent)",
+    map.getEventPixel(evt.originalEvent)
+  );
+
+  var pixel = evt.pixel;
+
+  console.log("evt.coordinate", evt.coordinate);
+  console.log('map.getEventCoordinate(evt.originalEvent)', map.getEventCoordinate(evt.originalEvent));
+  
+  console.log('map.getCoordinateFromPixel(evt.pixel)', map.getCoordinateFromPixel(evt.pixel));
+  console.log('map.getPixelFromCoordinate(evt.coordinate)', map.getPixelFromCoordinate(evt.coordinate));
+
+  let x = 0;
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    console.log("id:", feature.getId()); // debug
+    console.log("properties:", layer.getProperties());
+    // console.log(layer.getSource());
+    x++;
+  });
+  console.log(x);
+  
+    var feature = map.forEachLayerAtPixel(pixel, function(feature, pixel) {
+    console.log("id:", feature.getId()); // debug
+    console.log("properties:", layer.getProperties());
+    // console.log(layer.getSource());
+    x++;
+  });
+
+  console.log(map.getFeaturesAtPixel(pixel));
 });
 
 // test
 // https://openlayersbook.github.io/ch09-taking-control-of-controls/example-03.html
 // https://openlayers.org/en/latest/examples/mouse-position.html
+// Displays lat/lon at mouse position
+// ? can you actually get the value directly?
 var mousePosition = new ol.control.MousePosition({
   coordinateFormat: ol.coordinate.createStringXY(2),
-  projection: "EPSG:4326"
+  // projection: "EPSG:4326", // WGS 84
+  projection: "EPSG:3857" // Web Mercator
   // target: document.getElementById("myposition"),
   // undefinedHTML: "&nbsp;"
 });
-map.addControl(mousePosition); // can also .extend() the map controls collection
+map.addControl(mousePosition); // can also .extend() the map controls collection e.g. in Map constructor
 
 // //test
 // map.getView().on("change:resolution", function(evt) {
@@ -187,4 +235,24 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 //   var pixel = map.getEventPixel(evt.originalEvent);
 //   displayFeatureInfo(pixel);
 //   // displayFeatureInfo(evt.pixel);
+// });
+
+/* Adds pointerMove Select interation */
+// what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
+var selectPointerMove = new ol.interaction.Select({
+  condition: ol.events.condition.pointerMove,
+  style: highlightStyle
+});
+var select = selectPointerMove;
+
+// map.addInteraction(select);
+// select.on("select", function(e) {
+//   document.getElementById("status").innerHTML =
+//     "&nbsp;" +
+//     e.target.getFeatures().getLength() +
+//     " selected features (last operation selected " +
+//     e.selected.length +
+//     " and deselected " +
+//     e.deselected.length +
+//     " features)";
 // });
