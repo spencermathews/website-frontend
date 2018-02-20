@@ -53,7 +53,7 @@ var countyLayer = new ol.layer.Vector({
     return style;
   },
   minResolution: 200,
-  maxResolution: 2000
+  maxResolution: 4000
 });
 
 var map = new ol.Map({
@@ -183,28 +183,38 @@ map.on("click", function(evt) {
   var pixel = evt.pixel;
 
   console.log("evt.coordinate", evt.coordinate);
-  console.log('map.getEventCoordinate(evt.originalEvent)', map.getEventCoordinate(evt.originalEvent));
-  
-  console.log('map.getCoordinateFromPixel(evt.pixel)', map.getCoordinateFromPixel(evt.pixel));
-  console.log('map.getPixelFromCoordinate(evt.coordinate)', map.getPixelFromCoordinate(evt.coordinate));
+  console.log(
+    "map.getEventCoordinate(evt.originalEvent)",
+    map.getEventCoordinate(evt.originalEvent)
+  );
+
+  console.log(
+    "map.getCoordinateFromPixel(evt.pixel)",
+    map.getCoordinateFromPixel(evt.pixel)
+  );
+  console.log(
+    "map.getPixelFromCoordinate(evt.coordinate)",
+    map.getPixelFromCoordinate(evt.coordinate)
+  );
+
+  let features = map.getFeaturesAtPixel(pixel);
+  console.log(features.length, features);
 
   let x = 0;
   var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
     console.log("id:", feature.getId()); // debug
-    console.log("properties:", layer.getProperties());
-    // console.log(layer.getSource());
     x++;
   });
-  console.log(x);
-  
-    var feature = map.forEachLayerAtPixel(pixel, function(feature, pixel) {
-    console.log("id:", feature.getId()); // debug
-    console.log("properties:", layer.getProperties());
-    // console.log(layer.getSource());
-    x++;
-  });
+  console.log("#features", x);
 
-  console.log(map.getFeaturesAtPixel(pixel));
+  x = 0;
+  var feature = map.forEachLayerAtPixel(pixel, function(layer) {
+    console.log("layer", layer);
+    // console.log("properties:", layer.getProperties());
+    // console.log(layer.getSource());
+    x++;
+  });
+  console.log("#layers", x);
 });
 
 // test
