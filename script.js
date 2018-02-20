@@ -53,7 +53,7 @@ var countyLayer = new ol.layer.Vector({
     return style;
   },
   minResolution: 200,
-  maxResolution: 2000
+  maxResolution: 1999
 });
 
 var map = new ol.Map({
@@ -241,14 +241,14 @@ var selectPointerMove = new ol.interaction.Select({
 });
 var select = selectPointerMove;
 
-// map.addInteraction(select);
-// select.on("select", function(e) {
-//   document.getElementById("status").innerHTML =
-//     "&nbsp;" +
-//     e.target.getFeatures().getLength() +
-//     " selected features (last operation selected " +
-//     e.selected.length +
-//     " and deselected " +
-//     e.deselected.length +
-//     " features)";
-// });
+map.addInteraction(select);
+select.on("select", function(e) {
+  document.getElementById("status").innerHTML =
+    "&nbsp;" +
+    e.target.getFeatures().getLength() +
+    " selected features (last operation selected " +
+    e.selected.length +
+    " and deselected " +
+    e.deselected.length +
+    " features)";
+});
