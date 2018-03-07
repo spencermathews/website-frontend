@@ -20,14 +20,13 @@ var style = new ol.style.Style({
   })
 });
 
-var vectorLayer = new ol.layer.Vector({
+var stateLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
     format: new ol.format.TopoJSON({
       layers: ["states"]
-      // layers: ["counties"]
     }),
     overlaps: false
   }),
@@ -45,7 +44,6 @@ var countyLayer = new ol.layer.Vector({
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
     format: new ol.format.TopoJSON({
-      // layers: ["states"]
       layers: ["counties"]
     }),
     overlaps: false
@@ -61,13 +59,12 @@ var countyLayer = new ol.layer.Vector({
 var map = new ol.Map({
   target: "map",
   layers: [
-    // vectorLayer,
     new ol.layer.Tile({
       source: new ol.source.Stamen({
         layer: "toner"
       })
     }),
-    vectorLayer,
+    stateLayer,
     countyLayer
   ],
   view: new ol.View({
