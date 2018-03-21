@@ -23,6 +23,7 @@ var style = new ol.style.Style({
 var stateLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
+    // something is messed with NV on this map!?
     url: "https://spencermathews.github.io/us-data/geography/states.topo.json",
     
     // will require work to get this one working, probably because of projection? but even this does not have names!?
@@ -32,10 +33,11 @@ var stateLayer = new ol.layer.Vector({
     }),
     overlaps: false
   }),
-  style: function(feature) {
-    style.getText().setText(feature.get("name"));
-    return style;
-  },
+  style: style,
+  // style: function(feature) {
+  //   style.getText().setText(feature.get("name"));
+  //   return style;
+  // },
   minResolution: 2000,
   maxResolution: 20000
 });
@@ -95,6 +97,7 @@ var highlightStyle = new ol.style.Style({
   })
 });
 
+// unused! would be called by displayFeatureInfo
 var featureOverlay = new ol.layer.Vector({
   source: new ol.source.Vector(),
   map: map,
@@ -239,7 +242,13 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
 var selectPointerMove = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove,
-  style: highlightStyle
+  // style: highlightStyle
+  // test how to manipulate style w stylefunctions
+  // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
+  style: function(feature) {
+    highlightStyle.getText().setText(feature.get("name"));
+    return highlightStyle;
+  }
 });
 var select = selectPointerMove;
 
