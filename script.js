@@ -1,7 +1,5 @@
 // why does DoubleClickZoom not work as in https://openlayers.org/en/latest/examples/select-features.html
 
-
-
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
     color: "rgba(255, 255, 255, 0.6)"
@@ -299,7 +297,6 @@ select.on("select", function(e) {
   }
 });
 
-
 // should this come at start or end of js?
 var tmp;
 fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
@@ -308,8 +305,8 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
   })
   .then(function(responseAsJson) {
     tmp = responseAsJson;
-    console.log('response:', responseAsJson);
-  
+    console.log("response:", responseAsJson);
+
     // TODO deal with multiple pages
     // response has members count, next, previous, results
     var results = responseAsJson.results;
@@ -318,16 +315,42 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       console.log(state.story_count);
       if (state.story_count > maxStories) {
         maxStories = state.story_count;
-      } 
+      }
     }
-    console.log('******', maxStories)
-  
-    var colors = ['rgb(236, 145, 61)', 'rgb(250, 200, 95)', 'rgb(243, 235, 153)'];
-  
+    console.log("******", maxStories);
+
+    // first 3 are correct? colors, last is just some default
+    var colors = [
+      "rgb(236, 145, 61)",
+      "rgb(250, 200, 95)",
+      "rgb(243, 235, 153)",
+      "rgba(255, 255, 255, 0.6)"
+    ];
+
     stateLayer.setStyle(function(feature) {
-      style.getText().setText(feature.get("name"));
-      
-      style.getFill().setColor("rgba(255, 255, 255, 0.6)");
+      let name = feature.get("name");
+      style.getText().setText(name);
+
+      // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
+      console.log(name);
+      for (let state of results) {
+        if (name === state.name) {
+          console.log(state.name, state.story_count, maxStories);
+          // is there a smarter way?
+          // TODO make actual quintile/quantile
+          // TODO where is Utah? make sure we match all
+          if (state.story_count > maxStories * 3 / 4) {
+            style.getFill().setColor(colors[0]);
+          } else if (state.story_count > 10) {
+            style.getFill().setColor(colors[1]);
+          } else if (state.story_count > 3) {
+            style.getFill().setColor(colors[2]);
+          } else {
+            style.getFill().setColor(colors[3]);
+          }
+          break;
+        }
+      }
       return style;
     });
   })
