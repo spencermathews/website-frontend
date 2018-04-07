@@ -1,5 +1,7 @@
 // why does DoubleClickZoom not work as in https://openlayers.org/en/latest/examples/select-features.html
 
+
+
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
     color: "rgba(255, 255, 255, 0.6)"
@@ -22,10 +24,10 @@ var style = new ol.style.Style({
 
 var stateLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
+    // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // something is messed with NV on this map!?
-    // url: "https://spencermathews.github.io/us-data/geography/states.topo.json",
-    
+    url: "https://spencermathews.github.io/us-data/geography/states.topo.json",
+
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
     format: new ol.format.TopoJSON({
@@ -33,11 +35,11 @@ var stateLayer = new ol.layer.Vector({
     }),
     overlaps: false
   }),
-  style: style,
-  // style: function(feature) {
-  //   style.getText().setText(feature.get("name"));
-  //   return style;
-  // },
+  // style: style,
+  style: function(feature) {
+    style.getText().setText(feature.get("name"));
+    return style;
+  },
   minResolution: 2000,
   maxResolution: 20000
 });
@@ -117,6 +119,7 @@ var displayFeatureInfo = function(pixel) {
   });
 
   // unimplemented
+  // note moved to select callback
   // var info = document.getElementById("info");
   // if (feature) {
   //   info.innerHTML = feature.getId() + ": " + feature.get("name");
@@ -149,6 +152,20 @@ map.on("pointermove", function(evt) {
 
   // console.log("map fired pointermove");
 });
+
+// from http://openlayersbook.github.io/ch05-using-vector-layers/example-09.html
+// when the user moves the mouse, get the name property
+// from each feature under the mouse and display it
+function onMouseMove(browserEvent) {
+  var coordinate = browserEvent.coordinate;
+  var pixel = map.getPixelFromCoordinate(coordinate);
+  var el = document.getElementById("name");
+  el.innerHTML = "";
+  map.forEachFeatureAtPixel(pixel, function(feature) {
+    el.innerHTML += feature.get("name") + "<br>";
+  });
+}
+map.on("pointermove", onMouseMove);
 
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
@@ -191,6 +208,7 @@ map.on("click", function(evt) {
 
   let x = 0;
   var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+    // console.log("feature:", feature); // debug
     console.log("id:", feature.getId()); // debug
     console.log("properties:", layer.getProperties());
     // console.log(layer.getSource());
@@ -198,12 +216,13 @@ map.on("click", function(evt) {
   });
   console.log(x);
 
-  var feature = map.forEachLayerAtPixel(pixel, function(feature, pixel) {
-    console.log("id:", feature.getId()); // debug
-    console.log("properties:", layer.getProperties());
-    // console.log(layer.getSource());
-    x++;
-  });
+  // TODO adjust for layers vs features!
+  // var feature = map.forEachLayerAtPixel(pixel, function(layer, pixel) {
+  //   console.log("id:", feature.getId()); // debug
+  //   console.log("properties:", layer.getProperties());
+  //   // console.log(layer.getSource());
+  //   x++;
+  // });
 
   console.log(map.getFeaturesAtPixel(pixel));
 });
@@ -242,17 +261,17 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
 var selectPointerMove = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove,
-  style: highlightStyle
+  // style: highlightStyle
   // test how to manipulate style w stylefunctions
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
-  // style: function(feature) {
-  //   highlightStyle.getText().setText(feature.get("name"));
-  //   return highlightStyle;
-  // }
+  style: function(feature) {
+    highlightStyle.getText().setText(feature.get("name"));
+    return highlightStyle;
+  }
 });
 var select = selectPointerMove;
 
-map.addInteraction(select);
+// map.addInteraction(select);
 select.on("select", function(e) {
   document.getElementById("status").innerHTML =
     "&nbsp;" +
@@ -262,4 +281,56 @@ select.on("select", function(e) {
     " and deselected " +
     e.deselected.length +
     " features)";
+
+  /* Print the members of ol.interaction.Select.Event */
+  console.log("deselected:", e.deselected);
+  console.log("mapBrowserEvent:", e.mapBrowserEvent);
+  console.log("selected:", e.selected);
+  console.log("target:", e.target);
+  console.log("type:", e.type);
+
+  var feature = e.selected[0];
+  var info = document.getElementById("info");
+  // condition is legacy from example, can simplify
+  if (feature) {
+    info.innerHTML = feature.getId() + ": " + feature.get("name");
+  } else {
+    info.innerHTML = "&nbsp;";
+  }
 });
+
+
+// should this come at start or end of js?
+var tmp;
+fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(responseAsJson) {
+    tmp = responseAsJson;
+    console.log('response:', responseAsJson);
+  
+    // TODO deal with multiple pages
+    // response has members count, next, previous, results
+    var results = responseAsJson.results;
+    var maxStories = 0;
+    for (let state of results) {
+      console.log(state.story_count);
+      if (state.story_count > maxStories) {
+        maxStories = state.story_count;
+      } 
+    }
+    console.log('******', maxStories)
+  
+    var colors = ['rgb(236, 145, 61)', 'rgb(250, 200, 95)', 'rgb(243, 235, 153)'];
+  
+    stateLayer.setStyle(function(feature) {
+      style.getText().setText(feature.get("name"));
+      
+      style.getFill().setColor("rgba(255, 255, 255, 0.6)");
+      return style;
+    });
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
