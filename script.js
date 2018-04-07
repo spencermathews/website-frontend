@@ -269,7 +269,7 @@ var selectPointerMove = new ol.interaction.Select({
 });
 var select = selectPointerMove;
 
-// map.addInteraction(select);
+map.addInteraction(select);
 select.on("select", function(e) {
   document.getElementById("status").innerHTML =
     "&nbsp;" +
@@ -334,18 +334,21 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
       console.log(name);
       for (let state of results) {
+        // set default color in case state fails to match
+        style.getFill().setColor(colors[3]);
         if (name === state.name) {
           console.log(state.name, state.story_count, maxStories);
           // is there a smarter way?
           // TODO make actual quintile/quantile
           // TODO where is Utah? make sure we match all
-          if (state.story_count > maxStories * 3 / 4) {
+          if (state.story_count > 9) {
             style.getFill().setColor(colors[0]);
-          } else if (state.story_count > 10) {
+          } else if (state.story_count > 6) {
             style.getFill().setColor(colors[1]);
           } else if (state.story_count > 3) {
             style.getFill().setColor(colors[2]);
           } else {
+            // this else may not be necessary since we set default above
             style.getFill().setColor(colors[3]);
           }
           break;
@@ -357,3 +360,5 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
   .catch(function(err) {
     console.log(err);
   });
+
+// TODO get counties working, and reset color when we zoom in
