@@ -35,7 +35,7 @@ var stateLayer = new ol.layer.Vector({
   }),
   // style: style,
   style: function(feature) {
-    style.getText().setText(feature.get("name"));
+    // style.getText().setText(feature.get("name"));
     return style;
   },
   minResolution: 2000,
@@ -263,7 +263,7 @@ var selectPointerMove = new ol.interaction.Select({
   // test how to manipulate style w stylefunctions
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
   style: function(feature) {
-    highlightStyle.getText().setText(feature.get("name"));
+    // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
   }
 });
@@ -329,7 +329,7 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
 
     stateLayer.setStyle(function(feature) {
       let name = feature.get("name");
-      style.getText().setText(name);
+      // style.getText().setText(name);
 
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
       console.log(name);
@@ -361,4 +361,66 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
     console.log(err);
   });
 
-// TODO get counties working, and reset color when we zoom in
+// curently does not work
+// Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
+// var tmp;
+fetch("https://spencermathews.github.io/us-data/test/county-state_name-California-1.json")
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(responseAsJson) {
+    // tmp = responseAsJson;
+    console.log("response:", responseAsJson);
+
+    // TODO deal with multiple pages
+    // response has members count, next, previous, results
+    var results = responseAsJson.results;
+    var maxStories = 0;
+    for (let county of results) {
+      console.log(county.story_count);
+      if (county.story_count > maxStories) {
+        maxStories = county.story_count;
+      }
+    }
+    console.log("******", maxStories);
+
+    // first 3 are correct? colors, last is just some default
+    var colors = [
+      "rgb(236, 145, 61)",
+      "rgb(250, 200, 95)",
+      "rgb(243, 235, 153)",
+      "rgba(255, 255, 255, 0.6)"
+    ];
+
+    countyLayer.setStyle(function(feature) {
+      let name = feature.get("name");
+      // style.getText().setText(name);
+
+      // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
+      console.log(name);
+      for (let county of results) {
+        // set default color in case state fails to match
+        style.getFill().setColor(colors[3]);
+        if (name === county.name) {
+          console.log(county.name, county.story_count, maxStories);
+          // is there a smarter way?
+          // TODO make actual quintile/quantile
+          if (county.story_count > 9) {
+            style.getFill().setColor(colors[0]);
+          } else if (county.story_count > 6) {
+            style.getFill().setColor(colors[1]);
+          } else if (county.story_count > 3) {
+            style.getFill().setColor(colors[2]);
+          } else {
+            // this else may not be necessary since we set default above
+            style.getFill().setColor(colors[3]);
+          }
+          break;
+        }
+      }
+      return style;
+    });
+  })
+  .catch(function(err) {
+    console.log(err);
+  });
