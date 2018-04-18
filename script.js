@@ -65,10 +65,13 @@ var countyLayer = new ol.layer.Vector({
 var map = new ol.Map({
   target: "map",
   layers: [
+    // stateLayer,
+    // countyLayer,
     new ol.layer.Tile({
       source: new ol.source.Stamen({
         layer: "toner"
-      })
+      }),
+      opacity: 1
     }),
     stateLayer,
     countyLayer
@@ -324,12 +327,12 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
     // first 3 are correct? colors, last is just some default
     var colors = [
       // "rgb(236, 145, 61)",
-      "rgba(236, 145, 61, 0.5)",
+      "rgba(236, 145, 61, 0.9)",
       // "rgb(250, 200, 95)",
-      "rgba(250, 200, 95, 0.5)",
+      "rgba(250, 200, 95, 0.9)",
       // "rgb(243, 235, 153)",
-      "rgba(243, 235, 153, 0.5)",
-      "rgba(255, 255, 255, 0.6)"
+      "rgba(243, 235, 153, 0.9)",
+      "rgba(255, 255, 255, 0.9)"
     ];
 
     stateLayer.setStyle(function(feature) {
