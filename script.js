@@ -44,11 +44,13 @@ var stateLayer = new ol.layer.Vector({
 
 var countyLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
-    url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
+    // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
+    url: "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
     format: new ol.format.TopoJSON({
-      layers: ["counties"]
+      // layers: ["counties"]
+      layers: ["California.geo"]
     }),
     overlaps: false
   }),
@@ -321,9 +323,12 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
 
     // first 3 are correct? colors, last is just some default
     var colors = [
-      "rgb(236, 145, 61)",
-      "rgb(250, 200, 95)",
-      "rgb(243, 235, 153)",
+      // "rgb(236, 145, 61)",
+      "rgba(236, 145, 61, 0.5)",
+      // "rgb(250, 200, 95)",
+      "rgba(250, 200, 95, 0.5)",
+      // "rgb(243, 235, 153)",
+      "rgba(243, 235, 153, 0.5)",
       "rgba(255, 255, 255, 0.6)"
     ];
 
