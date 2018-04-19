@@ -75,10 +75,17 @@ var map = new ol.Map({
     }),
     stateLayer,
     countyLayer
+    // new ol.layer.Tile({
+    //   source: new ol.source.Stamen({
+    //     layer: "toner-lines"
+    //   }),
+    //   opacity: 1
+    // })
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([-95.867, 37.963]),
-    zoom: 4
+    zoom: 4, // best guess
+    minZoom: 3 // there may be a better way but this works
   })
 });
 
