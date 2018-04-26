@@ -50,6 +50,8 @@ var highlightStyle = new ol.style.Style({
   })
 });
 
+// highlightStyle = style;
+
 
 /********************************************************************************
  * Layers
@@ -329,10 +331,10 @@ select.on("select", function(e) {
 
   /* Print the members of ol.interaction.Select.Event */
   console.log("deselected:", e.deselected);
-  console.log("mapBrowserEvent:", e.mapBrowserEvent);
+  // console.log("mapBrowserEvent:", e.mapBrowserEvent);
   console.log("selected:", e.selected);
   console.log("target:", e.target);
-  console.log("type:", e.type);
+  // console.log("type:", e.type);
 
   var feature = e.selected[0];
   var info = document.getElementById("info");
@@ -350,26 +352,21 @@ select.on("select", function(e) {
  ********************************************************************************/
 
 // should this come at start or end of js?
-var tmp;
 fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
   .then(function(response) {
     return response.json();
   })
   .then(function(responseAsJson) {
-    tmp = responseAsJson;
-    console.log("response:", responseAsJson);
-
     // TODO deal with multiple pages
     // response has members count, next, previous, results
     var results = responseAsJson.results;
     var maxStories = 0;
     for (let state of results) {
-      console.log(state.story_count);
       if (state.story_count > maxStories) {
         maxStories = state.story_count;
       }
     }
-    console.log("******", maxStories);
+    console.log("maxStories (state):", maxStories);
 
     // first 3 are correct? colors, last is just some default
     var colors = [
@@ -388,12 +385,11 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       // style.getText().setText(name);
 
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
-      console.log(name);
       for (let state of results) {
         // set default color in case state fails to match
         style.getFill().setColor(colors[3]);
         if (name === state.name) {
-          console.log(state.name, state.story_count, maxStories);
+          // console.log(state.name, state.story_count, maxStories);
           // is there a smarter way?
           // TODO make actual quintile/quantile
           // TODO where is Utah? make sure we match all
@@ -419,26 +415,21 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
 
 // curently does not work
 // Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
-// var tmp;
 fetch("https://spencermathews.github.io/us-data/test/county-state_name-California-1.json")
   .then(function(response) {
     return response.json();
   })
   .then(function(responseAsJson) {
-    // tmp = responseAsJson;
-    console.log("response:", responseAsJson);
-
     // TODO deal with multiple pages
     // response has members count, next, previous, results
     var results = responseAsJson.results;
     var maxStories = 0;
     for (let county of results) {
-      console.log(county.story_count);
       if (county.story_count > maxStories) {
         maxStories = county.story_count;
       }
     }
-    console.log("******", maxStories);
+    console.log("maxStories (county):", maxStories);
 
     // first 3 are correct? colors, last is just some default
     var colors = [
