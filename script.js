@@ -1,11 +1,14 @@
 // why does DoubleClickZoom not work as in https://openlayers.org/en/latest/examples/select-features.html
 
+// rgb(236, 145, 61)?
+
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
-    color: "rgba(255, 255, 255, 0.6)"
+    // color: "rgba(255, 255, 255, 0.6)"
+    color: "#e6e3e4"
   }),
   stroke: new ol.style.Stroke({
-    color: "#319FD3",
+    color: "#fff",
     width: 1
   }),
   text: new ol.style.Text({
@@ -91,11 +94,12 @@ var map = new ol.Map({
 
 var highlightStyle = new ol.style.Style({
   stroke: new ol.style.Stroke({
-    color: "#f00",
+    color: "#fff",
     width: 1
   }),
   fill: new ol.style.Fill({
     color: "rgba(255,0,0,0.1)"
+    //"#e4e4e4"?
   }),
   text: new ol.style.Text({
     font: "12px Calibri,sans-serif",
@@ -339,7 +343,8 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       "rgba(250, 200, 95, 0.9)",
       // "rgb(243, 235, 153)",
       "rgba(243, 235, 153, 0.9)",
-      "rgba(255, 255, 255, 0.9)"
+      "#e6e3e4"
+      // "rgba(255, 255, 255, 0.9)"
     ];
 
     stateLayer.setStyle(function(feature) {
@@ -404,7 +409,8 @@ fetch("https://spencermathews.github.io/us-data/test/county-state_name-Californi
       "rgb(236, 145, 61)",
       "rgb(250, 200, 95)",
       "rgb(243, 235, 153)",
-      "rgba(255, 255, 255, 0.6)"
+      "#e6e3e4"
+      // "rgba(255, 255, 255, 0.6)"
     ];
 
     countyLayer.setStyle(function(feature) {
