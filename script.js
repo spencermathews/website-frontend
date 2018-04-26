@@ -303,10 +303,6 @@ var selectPointerMove = new ol.interaction.Select({
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
   style: function(feature) {
     // highlightStyle.getText().setText(feature.get("name"));
-    console.log(highlightStyle.getFill());
-    console.log(feature.getStyle());
-    console.log(feature.getStyleFunction());
-    console.log(feature.getProperties());
     return highlightStyle;
   }
 });
@@ -324,10 +320,10 @@ select.on("select", function(e) {
     " features)";
 
   /* Print the members of ol.interaction.Select.Event */
-  console.log("deselected:", e.deselected);
+  // console.log("deselected:", e.deselected);
   // console.log("mapBrowserEvent:", e.mapBrowserEvent);
-  console.log("selected:", e.selected);
-  console.log("target:", e.target);
+  // console.log("selected:", e.selected);
+  // console.log("target:", e.target);
   // console.log("type:", e.type);
 
   var feature = e.selected[0];
@@ -338,6 +334,19 @@ select.on("select", function(e) {
   } else {
     info.innerHTML = "&nbsp;";
   }
+
+  // Styling can be done when declaring the interaction, however we want to
+  // dim the existing fill, hopefull this will work...
+  var features = e.target.getFeatures();
+  console.assert(features.getLength() <= 1, features);
+  var feature = features.item(0);
+  console.log(feature.getId());
+  // console.log(feature.getProperties());
+  // console.log(feature.getKeys());
+  // console.log(highlightStyle.getFill());
+  console.log(feature.getStyle());
+  console.log(feature.getStyleFunction());
+  console.log(feature.getProperties());
 });
 
 /********************************************************************************
@@ -350,6 +359,7 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
     return response.json();
   })
   .then(function(responseAsJson) {
+    console.log(responseAsJson);
     // TODO deal with multiple pages
     // response has members count, next, previous, results
     var results = responseAsJson.results;
@@ -373,8 +383,11 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       // "rgba(255, 255, 255, 0.9)"
     ];
 
+    // Sets style function for the layer
+    // Note this is still OK even if features have not been populated from source
     stateLayer.setStyle(function(feature) {
       let name = feature.get("name");
+      console.log(name);
       // style.getText().setText(name);
 
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
@@ -401,10 +414,31 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       }
       return style;
     });
+    // stateLayer.setStyle(undefined); // use default style
+    // stateLayer.setStyle(null); // only features with style are shown
   })
   .catch(function(err) {
     console.log(err);
   });
+
+// Example of how to use source.getFeatures which may otherwise fail due to async loading
+// See https://openlayers.org/en/latest/doc/faq.html#why-are-my-features-not-found-
+stateLayer.getSource().on("change", function(evt) {
+  var source = evt.target;
+  console.log("yo");
+  if (source.getState() === "ready") {
+    var numFeatures = source.getFeatures().length;
+    console.log("Count after change: " + numFeatures);
+  }
+});
+// note features may not be available immediately, like features
+// ? how do ready state and change event relate?
+// var stateSource = stateLayer.getSource();
+// console.log("stateSource", stateSource);
+// console.log(stateSource.getUrl());
+// console.log(stateSource.getFormat());
+// console.log(stateSource.getState());
+
 
 // curently does not work
 // Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
