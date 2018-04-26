@@ -309,7 +309,9 @@ var selectPointerMove = new ol.interaction.Select({
 var select = selectPointerMove;
 
 map.addInteraction(select);
+// Define select event listener, listener function is passed ol.interaction.Select.Event
 select.on("select", function(e) {
+  // Populates #status
   document.getElementById("status").innerHTML =
     "&nbsp;" +
     e.target.getFeatures().getLength() +
@@ -319,13 +321,7 @@ select.on("select", function(e) {
     e.deselected.length +
     " features)";
 
-  /* Print the members of ol.interaction.Select.Event */
-  // console.log("deselected:", e.deselected);
-  // console.log("mapBrowserEvent:", e.mapBrowserEvent);
-  // console.log("selected:", e.selected);
-  // console.log("target:", e.target);
-  // console.log("type:", e.type);
-
+  // Populates #info
   var feature = e.selected[0];
   var info = document.getElementById("info");
   // condition is legacy from example, can simplify
@@ -335,18 +331,72 @@ select.on("select", function(e) {
     info.innerHTML = "&nbsp;";
   }
 
+  // debug
+  /* Print the members of ol.interaction.Select.Event */
+  // console.log("deselected:", e.deselected);
+  console.log("mapBrowserEvent:", e.mapBrowserEvent);
+  // console.log("selected:", e.selected);
+  console.log("target:", e.target);
+  // console.log("mapBrowserEvent:", e.mapBrowserEvent.target); // vs e.target?
+  // console.log("type:", e.type);
+  
+  
+  /* junk below */
+  
+  // console.log(stateLayer.getStyle());
+  // console.log(stateLayer.getStyleFunction());
+  // Note if using a style function getStyle and getStyleFunction will be same
+  // otherwise getStyle returns another sort of style object
+  // console.log(stateLayer.getStyle() == stateLayer.getStyleFunction());
+  
+  
+  // OK, so you can't restyle a style function!
+  var s = stateLayer.getStyle();
+  // s.clone()!
+  console.log(s);
+  console.log(s.getFill());
+  console.log(s.getFill().getColor());
+  
+  
+
+  // ? attempt to get layers
+  // this block is broken for reasons unknown
+  var layers = map.getLayers(); // .getArray();
+  console.log('#layers:', layers.getLength());
+  layers.forEach(function(layer, index) {
+    console.log('layer index:', index, layer);
+    // console.log(typeof layer);
+    if (layer.getVisible()) {
+      console.log('keys:', layer.getKeys);
+      console.log('properties:', layer.getProperties());
+      // console.log(layer.getOpacity());
+      console.log('min/maxResolution:', layer.getMinResolution, layer.getMaxResolution);
+      // ? getVisible seems to always be true even if layer is invisible by min/maxResolution
+      var source = layer.getSource();
+      console.log('source:', source);
+      console.log(source.getState());
+      // ? why the hell are keys and properties of source empty
+      console.log(source.getKeys());
+      console.log(source.getProperties());
+    } else {
+      console.log("what?");
+    }
+  });
+
   // Styling can be done when declaring the interaction, however we want to
   // dim the existing fill, hopefull this will work...
-  var features = e.target.getFeatures();
-  console.assert(features.getLength() <= 1, features);
-  var feature = features.item(0);
-  console.log(feature.getId());
-  // console.log(feature.getProperties());
-  // console.log(feature.getKeys());
-  // console.log(highlightStyle.getFill());
-  console.log(feature.getStyle());
-  console.log(feature.getStyleFunction());
-  console.log(feature.getProperties());
+  var features = e.target.getFeatures(); // gets a collection of features
+  if (features.getLength() == 1) {
+    var feature = features.item(0);
+    console.log('feature id:', feature.getId()); // does not work with
+    console.log(feature.getProperties());
+    console.log(feature.getKeys());
+    // console.log(highlightStyle.getFill());
+    console.log(feature.getStyle());
+    console.log(feature.getStyleFunction());
+  } else {
+    console.log("error feature:", feature);
+  }
 });
 
 /********************************************************************************
@@ -387,7 +437,7 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
     // Note this is still OK even if features have not been populated from source
     stateLayer.setStyle(function(feature) {
       let name = feature.get("name");
-      console.log(name);
+      // console.log(name);
       // style.getText().setText(name);
 
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
