@@ -383,8 +383,9 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       // "rgba(255, 255, 255, 0.9)"
     ];
 
-    // note make sure results is in scope
-    function hoverStyle(feature) {
+    // Sets style function for the layer
+    // Note this is still OK even if features have not been populated from source
+    stateLayer.setStyle(function(feature) {
       let name = feature.get("name");
       console.log(name);
       // style.getText().setText(name);
@@ -412,10 +413,7 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
         }
       }
       return style;
-    }
-    // Sets style function for the layer
-    // Note this is still OK even if features have not been populated from source
-    stateLayer.setStyle(hoverStyle);
+    });
     // stateLayer.setStyle(undefined); // use default style
     // stateLayer.setStyle(null); // only features with style are shown
   })
