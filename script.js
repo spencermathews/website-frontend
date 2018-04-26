@@ -2,7 +2,6 @@
 
 // rgb(236, 145, 61)?
 
-
 /********************************************************************************
  * Styles
  ********************************************************************************/
@@ -28,15 +27,14 @@ var style = new ol.style.Style({
   })
 });
 
-
 var highlightStyle = new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: "#fff",
-    width: 1
-  }),
   fill: new ol.style.Fill({
     color: "rgba(255,0,0,0.1)"
     //"#e4e4e4"?
+  }),
+  stroke: new ol.style.Stroke({
+    color: "#fff",
+    width: 1
   }),
   text: new ol.style.Text({
     font: "12px Calibri,sans-serif",
@@ -51,7 +49,6 @@ var highlightStyle = new ol.style.Style({
 });
 
 // highlightStyle = style;
-
 
 /********************************************************************************
  * Layers
@@ -79,13 +76,13 @@ var stateLayer = new ol.layer.Vector({
   maxResolution: 20000
 });
 
-
 var countyLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
-    url: "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
+    url:
+      "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
     format: new ol.format.TopoJSON({
       // layers: ["counties"]
       layers: ["California.geo"]
@@ -99,7 +96,6 @@ var countyLayer = new ol.layer.Vector({
   minResolution: 200,
   maxResolution: 1999
 });
-
 
 /********************************************************************************
  * Map
@@ -132,7 +128,6 @@ var map = new ol.Map({
   })
 });
 
-
 /********************************************************************************
  * Misc
  ********************************************************************************/
@@ -146,7 +141,6 @@ var featureOverlay = new ol.layer.Vector({
     return highlightStyle;
   }
 });
-
 
 // unused!
 var highlight;
@@ -179,7 +173,6 @@ var displayFeatureInfo = function(pixel) {
   }
 };
 
-
 // unused!
 map.on("pointermove", function(evt) {
   if (evt.dragging) {
@@ -192,7 +185,6 @@ map.on("pointermove", function(evt) {
 
   // console.log("map fired pointermove");
 });
-
 
 // from http://openlayersbook.github.io/ch05-using-vector-layers/example-09.html
 // when the user moves the mouse, get the name property
@@ -207,7 +199,6 @@ function onMouseMove(browserEvent) {
   });
 }
 map.on("pointermove", onMouseMove);
-
 
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
@@ -299,7 +290,6 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 //   // displayFeatureInfo(evt.pixel);
 // });
 
-
 /********************************************************************************
  * Select Interaction
  ********************************************************************************/
@@ -345,7 +335,6 @@ select.on("select", function(e) {
     info.innerHTML = "&nbsp;";
   }
 });
-
 
 /********************************************************************************
  * Data
@@ -415,7 +404,9 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
 
 // curently does not work
 // Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
-fetch("https://spencermathews.github.io/us-data/test/county-state_name-California-1.json")
+fetch(
+  "https://spencermathews.github.io/us-data/test/county-state_name-California-1.json"
+)
   .then(function(response) {
     return response.json();
   })
