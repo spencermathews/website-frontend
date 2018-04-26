@@ -383,9 +383,8 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       // "rgba(255, 255, 255, 0.9)"
     ];
 
-    // Sets style function for the layer
-    // Note this is still OK even if features have not been populated from source
-    stateLayer.setStyle(function(feature) {
+    // note make sure results is in scope
+    function hoverStyle(feature) {
       let name = feature.get("name");
       console.log(name);
       // style.getText().setText(name);
@@ -413,7 +412,10 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
         }
       }
       return style;
-    });
+    }
+    // Sets style function for the layer
+    // Note this is still OK even if features have not been populated from source
+    stateLayer.setStyle(hoverStyle);
     // stateLayer.setStyle(undefined); // use default style
     // stateLayer.setStyle(null); // only features with style are shown
   })
@@ -438,7 +440,6 @@ stateLayer.getSource().on("change", function(evt) {
 // console.log(stateSource.getUrl());
 // console.log(stateSource.getFormat());
 // console.log(stateSource.getState());
-
 
 // curently does not work
 // Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
