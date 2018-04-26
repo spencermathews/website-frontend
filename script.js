@@ -2,6 +2,11 @@
 
 // rgb(236, 145, 61)?
 
+
+/********************************************************************************
+ * Styles
+ ********************************************************************************/
+
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
     // color: "rgba(255, 255, 255, 0.6)"
@@ -22,6 +27,33 @@ var style = new ol.style.Style({
     })
   })
 });
+
+
+var highlightStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: "#fff",
+    width: 1
+  }),
+  fill: new ol.style.Fill({
+    color: "rgba(255,0,0,0.1)"
+    //"#e4e4e4"?
+  }),
+  text: new ol.style.Text({
+    font: "12px Calibri,sans-serif",
+    fill: new ol.style.Fill({
+      color: "#000"
+    }),
+    stroke: new ol.style.Stroke({
+      color: "#f00",
+      width: 3
+    })
+  })
+});
+
+
+/********************************************************************************
+ * Layers
+ ********************************************************************************/
 
 var stateLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -45,6 +77,7 @@ var stateLayer = new ol.layer.Vector({
   maxResolution: 20000
 });
 
+
 var countyLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
@@ -64,6 +97,11 @@ var countyLayer = new ol.layer.Vector({
   minResolution: 200,
   maxResolution: 1999
 });
+
+
+/********************************************************************************
+ * Map
+ ********************************************************************************/
 
 var map = new ol.Map({
   target: "map",
@@ -92,26 +130,10 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyle = new ol.style.Style({
-  stroke: new ol.style.Stroke({
-    color: "#fff",
-    width: 1
-  }),
-  fill: new ol.style.Fill({
-    color: "rgba(255,0,0,0.1)"
-    //"#e4e4e4"?
-  }),
-  text: new ol.style.Text({
-    font: "12px Calibri,sans-serif",
-    fill: new ol.style.Fill({
-      color: "#000"
-    }),
-    stroke: new ol.style.Stroke({
-      color: "#f00",
-      width: 3
-    })
-  })
-});
+
+/********************************************************************************
+ * Misc
+ ********************************************************************************/
 
 // unused! would be called by displayFeatureInfo
 var featureOverlay = new ol.layer.Vector({
@@ -122,6 +144,7 @@ var featureOverlay = new ol.layer.Vector({
     return highlightStyle;
   }
 });
+
 
 // unused!
 var highlight;
@@ -154,6 +177,7 @@ var displayFeatureInfo = function(pixel) {
   }
 };
 
+
 // unused!
 map.on("pointermove", function(evt) {
   if (evt.dragging) {
@@ -166,6 +190,7 @@ map.on("pointermove", function(evt) {
 
   // console.log("map fired pointermove");
 });
+
 
 // from http://openlayersbook.github.io/ch05-using-vector-layers/example-09.html
 // when the user moves the mouse, get the name property
@@ -180,6 +205,7 @@ function onMouseMove(browserEvent) {
   });
 }
 map.on("pointermove", onMouseMove);
+
 
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
@@ -271,6 +297,11 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 //   // displayFeatureInfo(evt.pixel);
 // });
 
+
+/********************************************************************************
+ * Select Interaction
+ ********************************************************************************/
+
 /* Adds pointerMove Select interation */
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
 var selectPointerMove = new ol.interaction.Select({
@@ -312,6 +343,11 @@ select.on("select", function(e) {
     info.innerHTML = "&nbsp;";
   }
 });
+
+
+/********************************************************************************
+ * Data
+ ********************************************************************************/
 
 // should this come at start or end of js?
 var tmp;
