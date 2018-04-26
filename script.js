@@ -303,6 +303,10 @@ var selectPointerMove = new ol.interaction.Select({
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
   style: function(feature) {
     // highlightStyle.getText().setText(feature.get("name"));
+    console.log(highlightStyle.getFill());
+    console.log(feature.getStyle());
+    console.log(feature.getStyleFunction());
+    console.log(feature.getProperties());
     return highlightStyle;
   }
 });
