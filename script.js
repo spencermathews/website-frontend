@@ -404,6 +404,18 @@ select.on("select", function(e) {
  * Data
  ********************************************************************************/
 
+// first 3 are correct? colors, last is just some default
+var colors = [
+  // "rgb(236, 145, 61)",
+  "rgba(236, 145, 61, 0.9)",
+  // "rgb(250, 200, 95)",
+  "rgba(250, 200, 95, 0.9)",
+  // "rgb(243, 235, 153)",
+  "rgba(243, 235, 153, 0.9)",
+  "#e6e3e4"
+  // "rgba(255, 255, 255, 0.9)"
+];
+
 // should this come at start or end of js?
 fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
   .then(function(response) {
@@ -421,18 +433,6 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       }
     }
     console.log("maxStories (state):", maxStories);
-
-    // first 3 are correct? colors, last is just some default
-    var colors = [
-      // "rgb(236, 145, 61)",
-      "rgba(236, 145, 61, 0.9)",
-      // "rgb(250, 200, 95)",
-      "rgba(250, 200, 95, 0.9)",
-      // "rgb(243, 235, 153)",
-      "rgba(243, 235, 153, 0.9)",
-      "#e6e3e4"
-      // "rgba(255, 255, 255, 0.9)"
-    ];
 
     // Sets style function for the layer
     // Note this is still OK even if features have not been populated from source
@@ -509,15 +509,6 @@ fetch(
       }
     }
     console.log("maxStories (county):", maxStories);
-
-    // first 3 are correct? colors, last is just some default
-    var colors = [
-      "rgb(236, 145, 61)",
-      "rgb(250, 200, 95)",
-      "rgb(243, 235, 153)",
-      "#e6e3e4"
-      // "rgba(255, 255, 255, 0.6)"
-    ];
 
     countyLayer.setStyle(function(feature) {
       let name = feature.get("name");
