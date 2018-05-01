@@ -96,6 +96,31 @@ var countyLayer = new ol.layer.Vector({
   maxResolution: 1999
 });
 
+var key =
+  "pk.eyJ1Ijoic21hdGhld3MiLCJhIjoiY2piMjc0eXd6Mjh5ajMzbmdxbnpmYjlsciJ9.CQrv5JFfFAKUdF2uLXe7Vw";
+
+var mapboxLayer = new ol.layer.VectorTile({
+  declutter: true,
+  source: new ol.source.VectorTile({
+    attributions:
+      '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
+      '© <a href="https://www.openstreetmap.org/copyright">' +
+      "OpenStreetMap contributors</a>",
+    format: new ol.format.MVT(),
+    url:
+      "https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/" +
+      "{z}/{x}/{y}.vector.pbf?access_token=" +
+      key
+  }),
+  style: createMapboxStreetsV6Style(
+    ol.style.Style,
+    ol.style.Fill,
+    ol.style.Stroke,
+    ol.style.Icon,
+    ol.style.Text
+  )
+});
+
 /********************************************************************************
  * Map
  ********************************************************************************/
@@ -118,7 +143,8 @@ var map = new ol.Map({
         layer: "toner-hybrid"
       }),
       opacity: 1
-    })
+    }),
+    mapboxLayer
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([-95.867, 37.963]),
@@ -307,7 +333,8 @@ var selectPointerMove = new ol.interaction.Select({
   style: function(feature) {
     // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
-  }
+  },
+  layers: [stateLayer, countyLayer]
 });
 var select = selectPointerMove;
 
