@@ -1,7 +1,5 @@
 // why does DoubleClickZoom not work as in https://openlayers.org/en/latest/examples/select-features.html
 
-// rgb(236, 145, 61)?
-
 /********************************************************************************
  * Styles
  ********************************************************************************/
@@ -404,17 +402,7 @@ select.on("select", function(e) {
  * Data
  ********************************************************************************/
 
-// first 3 are correct? colors, last is just some default
-var colors = [
-  // "rgb(236, 145, 61)",
-  "rgba(236, 145, 61, 0.9)",
-  // "rgb(250, 200, 95)",
-  "rgba(250, 200, 95, 0.9)",
-  // "rgb(243, 235, 153)",
-  "rgba(243, 235, 153, 0.9)",
-  "#e6e3e4"
-  // "rgba(255, 255, 255, 0.9)"
-];
+var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
 
 // should this come at start or end of js?
 fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
