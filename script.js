@@ -59,7 +59,6 @@ var stateLayer = new ol.layer.Vector({
     // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // something is messed with NV on this map!?
     url: "https://spencermathews.github.io/us-data/geography/states.topo.json",
-
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
     format: new ol.format.TopoJSON({
