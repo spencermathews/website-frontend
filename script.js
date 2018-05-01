@@ -80,11 +80,13 @@ var countyLayer = new ol.layer.Vector({
     // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
     // will require work to get this one working, probably because of projection? but even this does not have names!?
     // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
-    url:
-      "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
+    // url:
+    //   "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
+    // format: new ol.format.TopoJSON({
+    //   layers: ["California.geo"]
+    url: "https://cdn.rawgit.com/spencermathews/us-atlas/cbd1b078/us/10m.json",
     format: new ol.format.TopoJSON({
-      // layers: ["counties"]
-      layers: ["California.geo"]
+      layers: ["counties"]
     }),
     overlaps: false
   }),
@@ -338,41 +340,41 @@ select.on("select", function(e) {
   console.log("target:", e.target);
   // console.log("mapBrowserEvent:", e.mapBrowserEvent.target); // vs e.target?
   // console.log("type:", e.type);
-  
-  
+
   /* junk below */
-  
+
   // console.log(stateLayer.getStyle());
   // console.log(stateLayer.getStyleFunction());
   // Note if using a style function getStyle and getStyleFunction will be same
   // otherwise getStyle returns another sort of style object
   // console.log(stateLayer.getStyle() == stateLayer.getStyleFunction());
-  
-  
+
   // OK, so you can't restyle a style function!
   var s = stateLayer.getStyle();
   // s.clone()!
   console.log(s);
   console.log(s.getFill());
   console.log(s.getFill().getColor());
-  
-  
 
   // ? attempt to get layers
   // this block is broken for reasons unknown
   var layers = map.getLayers(); // .getArray();
-  console.log('#layers:', layers.getLength());
+  console.log("#layers:", layers.getLength());
   layers.forEach(function(layer, index) {
-    console.log('layer index:', index, layer);
+    console.log("layer index:", index, layer);
     // console.log(typeof layer);
     if (layer.getVisible()) {
-      console.log('keys:', layer.getKeys);
-      console.log('properties:', layer.getProperties());
+      console.log("keys:", layer.getKeys);
+      console.log("properties:", layer.getProperties());
       // console.log(layer.getOpacity());
-      console.log('min/maxResolution:', layer.getMinResolution, layer.getMaxResolution);
+      console.log(
+        "min/maxResolution:",
+        layer.getMinResolution,
+        layer.getMaxResolution
+      );
       // ? getVisible seems to always be true even if layer is invisible by min/maxResolution
       var source = layer.getSource();
-      console.log('source:', source);
+      console.log("source:", source);
       console.log(source.getState());
       // ? why the hell are keys and properties of source empty
       console.log(source.getKeys());
@@ -387,7 +389,7 @@ select.on("select", function(e) {
   var features = e.target.getFeatures(); // gets a collection of features
   if (features.getLength() == 1) {
     var feature = features.item(0);
-    console.log('feature id:', feature.getId()); // does not work with
+    console.log("feature id:", feature.getId()); // does not work with
     console.log(feature.getProperties());
     console.log(feature.getKeys());
     // console.log(highlightStyle.getFill());
