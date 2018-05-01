@@ -127,6 +127,10 @@ var map = new ol.Map({
   })
 });
 
+// var styleJson =
+//   "https://free.tilehosting.com/styles/positron/style.json?key=98iBFc9yWwYigscw6gO2";
+// olms.apply(map, styleJson);
+
 /********************************************************************************
  * Misc
  ********************************************************************************/
