@@ -114,13 +114,13 @@ var map = new ol.Map({
       opacity: 1
     }),
     stateLayer,
-    countyLayer
-    // new ol.layer.Tile({
-    //   source: new ol.source.Stamen({
-    //     layer: "toner-lines"
-    //   }),
-    //   opacity: 1
-    // })
+    countyLayer,
+    new ol.layer.Tile({
+      source: new ol.source.Stamen({
+        layer: "toner-hybrid"
+      }),
+      opacity: 1
+    })
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([-95.867, 37.963]),
