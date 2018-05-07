@@ -143,8 +143,8 @@ var map = new ol.Map({
         layer: "toner-hybrid"
       }),
       opacity: 1
-    }),
-    mapboxLayer
+    })
+    // mapboxLayer
   ],
   view: new ol.View({
     center: ol.proj.fromLonLat([-95.867, 37.963]),
