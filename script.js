@@ -6,8 +6,7 @@
 
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
-    // color: "rgba(255, 255, 255, 0.6)"
-    color: "#e6e3e4"
+    color: "rgba(255, 0, 0, 1.0)"
   }),
   stroke: new ol.style.Stroke({
     // color: "rgba(255, 0, 0, 0.6)",
@@ -28,7 +27,7 @@ var style = new ol.style.Style({
 
 var highlightStyle = new ol.style.Style({
   fill: new ol.style.Fill({
-    color: "rgba(255,255,255,0.0)"
+    color: "rgba(255, 255, 255, 0.0)"
   }),
   stroke: new ol.style.Stroke({
     color: "#000",
