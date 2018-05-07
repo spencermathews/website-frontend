@@ -138,13 +138,13 @@ var map = new ol.Map({
       opacity: 1
     }),
     stateLayer,
-    countyLayer,
-    new ol.layer.Tile({
-      source: new ol.source.Stamen({
-        layer: "toner-hybrid"
-      }),
-      opacity: 1
-    })
+    countyLayer
+    // new ol.layer.Tile({
+    //   source: new ol.source.Stamen({
+    //     layer: "toner-hybrid"
+    //   }),
+    //   opacity: 1
+    // })
     // mapboxLayer
   ],
   view: new ol.View({
