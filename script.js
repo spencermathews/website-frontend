@@ -28,11 +28,10 @@ var style = new ol.style.Style({
 
 var highlightStyle = new ol.style.Style({
   fill: new ol.style.Fill({
-    color: "rgba(255,0,0,0.1)"
-    //"#e4e4e4"?
+    color: "rgba(255,255,255,0.0)"
   }),
   stroke: new ol.style.Stroke({
-    color: "#fff",
+    color: "#000",
     width: 1
   }),
   text: new ol.style.Text({
