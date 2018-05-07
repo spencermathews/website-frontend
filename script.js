@@ -10,6 +10,7 @@ var style = new ol.style.Style({
     color: "#e6e3e4"
   }),
   stroke: new ol.style.Stroke({
+    // color: "rgba(255, 0, 0, 0.6)",
     color: "#fff",
     width: 1
   }),
@@ -511,53 +512,53 @@ stateLayer.getSource().on("change", function(evt) {
 
 // curently does not work
 // Eventually want to combine this with loading of /api/state tp remove redundancy, but first need to load county layer with names.
-fetch(
-  "https://spencermathews.github.io/us-data/test/county-state_name-California-1.json"
-)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(responseAsJson) {
-    // TODO deal with multiple pages
-    // response has members count, next, previous, results
-    var results = responseAsJson.results;
-    var maxStories = 0;
-    for (let county of results) {
-      if (county.story_count > maxStories) {
-        maxStories = county.story_count;
-      }
-    }
-    console.log("maxStories (county):", maxStories);
+// fetch(
+//   "https://spencermathews.github.io/us-data/test/county-state_name-California-1.json"
+// )
+//   .then(function(response) {
+//     return response.json();
+//   })
+//   .then(function(responseAsJson) {
+//     // TODO deal with multiple pages
+//     // response has members count, next, previous, results
+//     var results = responseAsJson.results;
+//     var maxStories = 0;
+//     for (let county of results) {
+//       if (county.story_count > maxStories) {
+//         maxStories = county.story_count;
+//       }
+//     }
+//     console.log("maxStories (county):", maxStories);
 
-    countyLayer.setStyle(function(feature) {
-      let name = feature.get("name");
-      // style.getText().setText(name);
+//     countyLayer.setStyle(function(feature) {
+//       let name = feature.get("name");
+//       // style.getText().setText(name);
 
-      // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
-      console.log(name);
-      for (let county of results) {
-        // set default color in case state fails to match
-        style.getFill().setColor(colors[3]);
-        if (name === county.name) {
-          console.log(county.name, county.story_count, maxStories);
-          // is there a smarter way?
-          // TODO make actual quintile/quantile
-          if (county.story_count > 9) {
-            style.getFill().setColor(colors[0]);
-          } else if (county.story_count > 6) {
-            style.getFill().setColor(colors[1]);
-          } else if (county.story_count > 3) {
-            style.getFill().setColor(colors[2]);
-          } else {
-            // this else may not be necessary since we set default above
-            style.getFill().setColor(colors[3]);
-          }
-          break;
-        }
-      }
-      return style;
-    });
-  })
-  .catch(function(err) {
-    console.log(err);
-  });
+//       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
+//       console.log(name);
+//       for (let county of results) {
+//         // set default color in case state fails to match
+//         style.getFill().setColor(colors[3]);
+//         if (name === county.name) {
+//           console.log(county.name, county.story_count, maxStories);
+//           // is there a smarter way?
+//           // TODO make actual quintile/quantile
+//           if (county.story_count > 9) {
+//             style.getFill().setColor(colors[0]);
+//           } else if (county.story_count > 6) {
+//             style.getFill().setColor(colors[1]);
+//           } else if (county.story_count > 3) {
+//             style.getFill().setColor(colors[2]);
+//           } else {
+//             // this else may not be necessary since we set default above
+//             style.getFill().setColor(colors[3]);
+//           }
+//           break;
+//         }
+//       }
+//       return style;
+//     });
+//   })
+//   .catch(function(err) {
+//     console.log(err);
+//   });
