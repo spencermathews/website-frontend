@@ -339,7 +339,9 @@ var select = selectPointerMove;
 
 map.addInteraction(select);
 // Define select event listener, listener function is passed ol.interaction.Select.Event
-select.on("select", function(e) {
+select.on("select", selectListener);
+
+function selectListener(e) {
   // Populates #status
   document.getElementById("status").innerHTML =
     "&nbsp;" +
@@ -410,7 +412,7 @@ select.on("select", function(e) {
     } else {
       console.log("what?");
     }
-  });
+  }
 
   // Styling can be done when declaring the interaction, however we want to
   // dim the existing fill, hopefull this will work...
