@@ -324,7 +324,7 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
 
 /* Adds pointerMove Select interation */
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
-var selectPointerMove = new ol.interaction.Select({
+var selectState = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove,
   // style: highlightStyle
   // test how to manipulate style w stylefunctions
@@ -333,13 +333,26 @@ var selectPointerMove = new ol.interaction.Select({
     // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
   },
-  layers: [stateLayer, countyLayer]
+  layers: [stateLayer]
 });
-var select = selectPointerMove;
+map.addInteraction(selectState);
 
-map.addInteraction(select);
+var selectCounty = new ol.interaction.Select({
+  condition: ol.events.condition.pointerMove,
+  // style: highlightStyle
+  // test how to manipulate style w stylefunctions
+  // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
+  style: function(feature) {
+    // highlightStyle.getText().setText(feature.get("name"));
+    return highlightStyle;
+  },
+  layers: [countyLayer]
+});
+map.addInteraction(selectCounty);
+
+
 // Define select event listener, listener function is passed ol.interaction.Select.Event
-select.on("select", selectListener);
+selectState.on("select", selectListener);
 
 function selectListener(e) {
   // Populates #status
