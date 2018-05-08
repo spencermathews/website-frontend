@@ -364,11 +364,10 @@ var selectCounty = new ol.interaction.Select({
 });
 map.addInteraction(selectCounty);
 
-
 // Define select event listener, listener function is passed ol.interaction.Select.Event
-selectState.on("select", selectListener);
+selectState.on("select", selectStateListener);
 
-function selectListener(e) {
+function selectStateListener(e) {
   // Populates #status
   document.getElementById("status").innerHTML =
     "&nbsp;" +
