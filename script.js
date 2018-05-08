@@ -157,10 +157,9 @@ var map = new ol.Map({
 // olms.apply(map, styleJson);
 
 /********************************************************************************
- * Misc
+ * old original pointermove Event
  ********************************************************************************/
 
-// unused! would be called by displayFeatureInfo
 var featureOverlay = new ol.layer.Vector({
   source: new ol.source.Vector(),
   map: map,
@@ -201,7 +200,6 @@ var displayFeatureInfo = function(pixel) {
   }
 };
 
-// unused!
 map.on("pointermove", function(evt) {
   if (evt.dragging) {
     return;
@@ -213,6 +211,10 @@ map.on("pointermove", function(evt) {
 
   // console.log("map fired pointermove");
 });
+
+/********************************************************************************
+ * pointermove Event
+ ********************************************************************************/
 
 // from http://openlayersbook.github.io/ch05-using-vector-layers/example-09.html
 // when the user moves the mouse, get the name property
@@ -227,6 +229,10 @@ function onMouseMove(browserEvent) {
   });
 }
 map.on("pointermove", onMouseMove);
+
+/********************************************************************************
+ * click Event
+ ********************************************************************************/
 
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
@@ -288,6 +294,10 @@ map.on("click", function(evt) {
   console.log(map.getFeaturesAtPixel(pixel));
 });
 
+/********************************************************************************
+ * MousePosition Control
+ ********************************************************************************/
+
 // test
 // https://openlayersbook.github.io/ch09-taking-control-of-controls/example-03.html
 // https://openlayers.org/en/latest/examples/mouse-position.html
@@ -301,6 +311,10 @@ var mousePosition = new ol.control.MousePosition({
   // undefinedHTML: "&nbsp;"
 });
 map.addControl(mousePosition); // can also .extend() the map controls collection e.g. in Map constructor
+
+/********************************************************************************
+ * Junk
+ ********************************************************************************/
 
 // //test
 // map.getView().on("change:resolution", function(evt) {
