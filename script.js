@@ -425,7 +425,7 @@ function selectListener(e) {
     } else {
       console.log("what?");
     }
-  }
+  });
 
   // Styling can be done when declaring the interaction, however we want to
   // dim the existing fill, hopefull this will work...
@@ -441,7 +441,7 @@ function selectListener(e) {
   } else {
     console.log("error feature:", feature);
   }
-});
+}
 
 /********************************************************************************
  * Data
