@@ -435,7 +435,7 @@ select.on("select", function(e) {
 var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
 
 // should this come at start or end of js?
-fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
+fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
   .then(function(response) {
     return response.json();
   })
