@@ -65,7 +65,7 @@ var stateLayer = new ol.layer.Vector({
   }),
   // style: style,
   style: function(feature) {
-    style.getText().setText(feature.get("name"));
+    // style.getText().setText(feature.get("name"));
     return style;
   },
   minResolution: 200,
@@ -88,7 +88,7 @@ var countyLayer = new ol.layer.Vector({
     overlaps: false
   }),
   style: function(feature) {
-    style.getText().setText(feature.get("name"));
+    // style.getText().setText(feature.get("name"));
     return style;
   },
   minResolution: 200,
