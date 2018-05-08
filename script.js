@@ -68,7 +68,7 @@ var stateLayer = new ol.layer.Vector({
     style.getText().setText(feature.get("name"));
     return style;
   },
-  minResolution: 2000,
+  minResolution: 200,
   maxResolution: 20000
 });
 
@@ -135,8 +135,8 @@ var map = new ol.Map({
       }),
       opacity: 1
     }),
-    stateLayer,
-    countyLayer
+    countyLayer,
+    stateLayer
     // new ol.layer.Tile({
     //   source: new ol.source.Stamen({
     //     layer: "toner-hybrid"
