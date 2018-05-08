@@ -65,7 +65,7 @@ var stateLayer = new ol.layer.Vector({
   }),
   // style: style,
   style: function(feature) {
-    // style.getText().setText(feature.get("name"));
+    style.getText().setText(feature.get("name"));
     return style;
   },
   minResolution: 2000,
@@ -458,6 +458,7 @@ fetch("https://spencermathews.github.io/us-data/test/state-page-1.json")
       let name = feature.get("name");
       // console.log(name);
       // style.getText().setText(name);
+      style.getText().setText('');
 
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
       for (let state of results) {
