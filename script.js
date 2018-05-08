@@ -378,11 +378,11 @@ select.on("select", function(e) {
   // console.log(stateLayer.getStyle() == stateLayer.getStyleFunction());
 
   // OK, so you can't restyle a style function!
-  var s = stateLayer.getStyle();
-  // s.clone()!
-  console.log(s);
-  console.log(s.getFill());
-  console.log(s.getFill().getColor());
+  // var s = stateLayer.getStyle();
+  // // s.clone()!
+  // console.log(s);
+  // console.log(s.getFill());
+  // console.log(s.getFill().getColor());
 
   // ? attempt to get layers
   // this block is broken for reasons unknown
