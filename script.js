@@ -529,6 +529,65 @@ stateLayer.getSource().on("change", function(evt) {
     console.log("Count after change: " + numFeatures);
   }
 });
+
+function fetchState(state) {
+  fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(responseAsJson) {
+      console.log(responseAsJson);
+      // TODO deal with multiple pages
+      // response has members count, next, previous, results
+      var results = responseAsJson.results;
+      var maxStories = 0;
+      for (let state of results) {
+        if (state.story_count > maxStories) {
+          maxStories = state.story_count;
+        }
+      }
+      console.log("maxStories (state):", maxStories);
+
+      // Sets style function for the layer
+      // Note this is still OK even if features have not been populated from source
+      stateLayer.setStyle(function(feature) {
+        let name = feature.get("name");
+        // console.log(name);
+        // style.getText().setText(name);
+        style.getText().setText("");
+
+        // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
+        for (let state of results) {
+          // set default color in case state fails to match
+          style.getFill().setColor(colors[3]);
+          if (name === state.name) {
+            // console.log(state.name, state.story_count, maxStories);
+            // is there a smarter way?
+            // TODO make actual quintile/quantile
+            // TODO where is Utah? make sure we match all
+            if (state.story_count > 9) {
+              style.getFill().setColor(colors[0]);
+            } else if (state.story_count > 6) {
+              style.getFill().setColor(colors[1]);
+            } else if (state.story_count > 3) {
+              style.getFill().setColor(colors[2]);
+            } else {
+              // this else may not be necessary since we set default above
+              style.getFill().setColor(colors[3]);
+            }
+            break;
+          }
+        }
+        return style;
+      });
+      // stateLayer.setStyle(undefined); // use default style
+      // stateLayer.setStyle(null); // only features with style are shown
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+}
+
 // note features may not be available immediately, like features
 // ? how do ready state and change event relate?
 // var stateSource = stateLayer.getSource();
