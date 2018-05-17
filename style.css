@@ -23,3 +23,8 @@ body {
   background-color: #19938e;
   padding: 1em;
 }
+
+#status,
+#name {
+  display: none;
+}

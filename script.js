@@ -383,7 +383,8 @@ function selectStateListener(e) {
   var info = document.getElementById("info");
   // condition is legacy from example, can simplify
   if (feature) {
-    info.innerHTML = feature.getId() + ": " + feature.get("name");
+    let name = feature.get("name");
+    info.innerHTML = stateStories[name].story_count + " stories<br>from " + name; //feature.getId()
   } else {
     info.innerHTML = "&nbsp;";
   }
