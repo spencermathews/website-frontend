@@ -381,10 +381,25 @@ function selectStateListener(e) {
   // Populates #info
   var feature = e.selected[0];
   var info = document.getElementById("info");
+  info.innerHTML = "";
+  let stories = document.getElementById("stories");
+  stories.innerHTML = "";
   // condition is legacy from example, can simplify
   if (feature) {
     let name = feature.get("name");
-    info.innerHTML = stateStories[name].story_count + " stories<br>from " + name; //feature.getId()
+    if (stateStories[name] === undefined) {
+      info.innerHTML = "0" + " stories<br>from " + name;
+    } else {
+      let storyCount = stateStories[name].story_count;
+      info.innerHTML = storyCount + " stories<br>from " + name; //feature.getId()
+
+      for (let preview of stateStories[name].preview) {
+        let storyElement = document.createElement("div");
+        storyElement.classList.add("preview");
+        storyElement.innerHTML = preview + "...";
+        stories.appendChild(storyElement);
+      }
+    }
   } else {
     info.innerHTML = "&nbsp;";
   }

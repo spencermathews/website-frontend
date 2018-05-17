@@ -12,15 +12,22 @@ body {
 #sidebar {
   position: fixed;
   top: 20%;
-  bottom: 20%;
   right: 0;
   width: 20%;
+  min-width: 200px;
   background-color: black;
   color: white;
+  outline: white solid 1px;
 }
 
 #location {
   background-color: #19938e;
+  padding: 1em;
+}
+
+.preview {
+  background-color: #3f3f3f;
+  margin: 1em;
   padding: 1em;
 }
 
