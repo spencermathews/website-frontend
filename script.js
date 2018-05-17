@@ -462,6 +462,12 @@ function selectStateListener(e) {
 
 var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
 
+// from https://medium.com/dailyjs/rewriting-javascript-converting-an-array-of-objects-to-an-object-ec579cafbfc7
+const arrayToObject = (arr, keyField) =>
+  Object.assign({}, ...arr.map(item => ({ [item[keyField]]: item })));
+
+var stateStories;
+
 // should this come at start or end of js?
 fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
   .then(function(response) {
@@ -472,6 +478,8 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     // TODO deal with multiple pages
     // response has members count, next, previous, results
     var results = responseAsJson.results;
+    stateStories = arrayToObject(results, "name");
+
     var maxStories = 0;
     for (let state of results) {
       if (state.story_count > maxStories) {
