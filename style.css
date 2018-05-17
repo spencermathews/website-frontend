@@ -17,6 +17,9 @@ body {
   width: 20%;
   background-color: black;
   color: white;
-  box-sizing: border-box;
+}
+
+#location {
+  background-color: #19938e;
   padding: 1em;
 }
