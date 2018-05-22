@@ -64,7 +64,7 @@ var stateLayer = new ol.layer.Vector({
     overlaps: false
   }),
   // style: style,
-  style: function(feature) {
+  style: function (feature) {
     // style.getText().setText(feature.get("name"));
     return style;
   },
@@ -87,7 +87,7 @@ var countyLayer = new ol.layer.Vector({
     }),
     overlaps: false
   }),
-  style: function(feature) {
+  style: function (feature) {
     // style.getText().setText(feature.get("name"));
     return style;
   },
@@ -163,7 +163,7 @@ var map = new ol.Map({
 var featureOverlay = new ol.layer.Vector({
   source: new ol.source.Vector(),
   map: map,
-  style: function(feature) {
+  style: function (feature) {
     highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
   }
@@ -171,10 +171,10 @@ var featureOverlay = new ol.layer.Vector({
 
 // unused!
 var highlight;
-var displayFeatureInfo = function(pixel) {
+var displayFeatureInfo = function (pixel) {
   // may need better logic with multiple layers!
   // this does not seem to pick up layers other than the feature layer!
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+  var feature = map.forEachFeatureAtPixel(pixel, function (feature) {
     return feature;
   });
 
@@ -200,7 +200,7 @@ var displayFeatureInfo = function(pixel) {
   }
 };
 
-map.on("pointermove", function(evt) {
+map.on("pointermove", function (evt) {
   if (evt.dragging) {
     return;
   }
@@ -224,7 +224,7 @@ function onMouseMove(browserEvent) {
   var pixel = map.getPixelFromCoordinate(coordinate);
   var el = document.getElementById("name");
   el.innerHTML = "";
-  map.forEachFeatureAtPixel(pixel, function(feature) {
+  map.forEachFeatureAtPixel(pixel, function (feature) {
     el.innerHTML += feature.get("name") + "<br>";
   });
 }
@@ -237,7 +237,7 @@ map.on("pointermove", onMouseMove);
 // click fires ol.MapBrowserEvent
 // ? where the hell is documentation for the arg to listener function?
 // note: the mere presence of this event prevents the default DoubleClickZoom interaction, is there a way to preserve it? maybe raise the event again?
-map.on("click", function(evt) {
+map.on("click", function (evt) {
   // displayFeatureInfo(evt.pixel);
 
   console.log("map fired click");
@@ -274,7 +274,7 @@ map.on("click", function(evt) {
   );
 
   let x = 0;
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  var feature = map.forEachFeatureAtPixel(pixel, function (feature, layer) {
     // console.log("feature:", feature); // debug
     console.log("id:", feature.getId()); // debug
     console.log("properties:", layer.getProperties());
@@ -343,7 +343,7 @@ var selectState = new ol.interaction.Select({
   // style: highlightStyle
   // test how to manipulate style w stylefunctions
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
-  style: function(feature) {
+  style: function (feature) {
     // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
   },
@@ -356,7 +356,7 @@ var selectCounty = new ol.interaction.Select({
   // style: highlightStyle
   // test how to manipulate style w stylefunctions
   // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
-  style: function(feature) {
+  style: function (feature) {
     // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
   },
@@ -432,7 +432,7 @@ function selectStateListener(e) {
   // this block is broken for reasons unknown
   var layers = map.getLayers(); // .getArray();
   console.log("#layers:", layers.getLength());
-  layers.forEach(function(layer, index) {
+  layers.forEach(function (layer, index) {
     console.log("layer index:", index, layer);
     // console.log(typeof layer);
     if (layer.getVisible()) {
@@ -486,10 +486,10 @@ var stateStories;
 
 // should this come at start or end of js?
 fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
-  .then(function(response) {
+  .then(function (response) {
     return response.json();
   })
-  .then(function(responseAsJson) {
+  .then(function (responseAsJson) {
     console.log(responseAsJson);
     // TODO deal with multiple pages
     // response has members count, next, previous, results
@@ -506,7 +506,7 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
 
     // Sets style function for the layer
     // Note this is still OK even if features have not been populated from source
-    stateLayer.setStyle(function(feature) {
+    stateLayer.setStyle(function (feature) {
       let name = feature.get("name");
       // console.log(name);
       // style.getText().setText(name);
@@ -539,13 +539,13 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     // stateLayer.setStyle(undefined); // use default style
     // stateLayer.setStyle(null); // only features with style are shown
   })
-  .catch(function(err) {
+  .catch(function (err) {
     console.log(err);
   });
 
 // Example of how to use source.getFeatures which may otherwise fail due to async loading
 // See https://openlayers.org/en/latest/doc/faq.html#why-are-my-features-not-found-
-stateLayer.getSource().on("change", function(evt) {
+stateLayer.getSource().on("change", function (evt) {
   var source = evt.target;
   console.log("yo");
   if (source.getState() === "ready") {
