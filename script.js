@@ -543,26 +543,29 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     console.log(err);
   });
 
+getStatePreview("California");
+
 function getStatePreview(state_name) {
-  fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
+  fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
     .then(function (response) {
       return response.json();
     })
     .then(function (responseAsJson) {
-      console.log(responseAsJson);
+      console.log("getStatePreview", responseAsJson);
       // TODO deal with multiple pages
       // response has members count, next, previous, results
       var results = responseAsJson.results;
-      stateStories = arrayToObject(results, "name");
+      countyStories = arrayToObject(results, "name");
 
       var maxStories = 0;
-      for (let state of results) {
-        if (state.story_count > maxStories) {
-          maxStories = state.story_count;
+      for (let county of results) {
+        if (county.story_count > maxStories) {
+          maxStories = county.story_count;
         }
       }
-      console.log("maxStories (state):", maxStories);
+      console.log("maxStories (county):", maxStories);
 
+      /*
       // Sets style function for the layer
       // Note this is still OK even if features have not been populated from source
       stateLayer.setStyle(function (feature) {
@@ -595,8 +598,7 @@ function getStatePreview(state_name) {
         }
         return style;
       });
-      // stateLayer.setStyle(undefined); // use default style
-      // stateLayer.setStyle(null); // only features with style are shown
+      */
     })
     .catch(function (err) {
       console.log(err);
