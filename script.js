@@ -364,9 +364,12 @@ var selectCounty = new ol.interaction.Select({
 });
 map.addInteraction(selectCounty);
 
-// Define select event listener, listener function is passed ol.interaction.Select.Event
+// Define state select event listener, listener function is passed ol.interaction.Select.Event
 selectState.on("select", selectStateListener);
 
+/*
+ * Event listener for state select interaction.
+ */
 function selectStateListener(e) {
   // Populates #status
   document.getElementById("status").innerHTML =
@@ -478,12 +481,21 @@ function selectStateListener(e) {
 
 var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
 
-// from https://medium.com/dailyjs/rewriting-javascript-converting-an-array-of-objects-to-an-object-ec579cafbfc7
+/*
+ * Converts an array of objects to an object with property names based on some key in the array objects.
+ * 
+ * from https://medium.com/dailyjs/rewriting-javascript-converting-an-array-of-objects-to-an-object-ec579cafbfc7
+ * 
+ * @param {Object[]} arr
+ * @param {String} keyField - The property by which to key the objects.
+ */
 const arrayToObject = (arr, keyField) =>
   Object.assign({}, ...arr.map(item => ({ [item[keyField]]: item })));
 
+// Stores national (per state) summary data keyed by (full) name
 var stateStories;
 
+/* Gets state story counts via nation level preview. */
 // should this come at start or end of js?
 fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
   .then(function (response) {
