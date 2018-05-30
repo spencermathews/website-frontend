@@ -475,6 +475,40 @@ function selectStateListener(e) {
   }
 }
 
+// Define county select event listener, listener function is passed ol.interaction.Select.Event
+selectCounty.on("select", selectCountyListener);
+
+/*
+ * Event listener for county select interaction.
+ */
+function selectCountyListener(e) {
+  // Populates #info and #stories
+  var info = document.getElementById("info");
+  info.innerHTML = "";
+  let stories = document.getElementById("stories");
+  stories.innerHTML = "";
+  var feature = e.selected[0];
+  // condition is legacy from example, can simplify
+  if (feature) {
+    let name = feature.get("name");
+    if (countyStories[name] === undefined) {
+      info.innerHTML = "0" + " stories<br>from " + name;
+    } else {
+      let storyCount = countyStories[name].story_count;
+      info.innerHTML = storyCount + " stories<br>from " + name; //feature.getId()
+
+      for (let preview of countyStories[name].preview) {
+        let storyElement = document.createElement("div");
+        storyElement.classList.add("preview");
+        storyElement.innerHTML = preview + "...";
+        stories.appendChild(storyElement);
+      }
+    }
+  } else {
+    info.innerHTML = "&nbsp;";
+  }
+}
+
 /********************************************************************************
  * Data
  ********************************************************************************/
