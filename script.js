@@ -382,11 +382,11 @@ function selectStateListener(e) {
     " features)";
 
   // Populates #info
-  var feature = e.selected[0];
   var info = document.getElementById("info");
   info.innerHTML = "";
   let stories = document.getElementById("stories");
   stories.innerHTML = "";
+  var feature = e.selected[0];
   // condition is legacy from example, can simplify
   if (feature) {
     let name = feature.get("name");
