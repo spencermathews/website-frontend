@@ -407,6 +407,11 @@ function selectStateListener(e) {
     info.innerHTML = "&nbsp;";
   }
 
+  // debugSelectEvent(e); // consider preserving use call() to preserve "this"
+}
+
+function debugSelectEvent(e) {
+  console.log('\nin debugSelectEvent:');
   // debug
   /* Print the members of ol.interaction.Select.Event */
   // console.log("deselected:", e.deselected);
