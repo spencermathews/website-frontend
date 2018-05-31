@@ -617,9 +617,12 @@ function getStatePreview(state_name) {
       // TODO deal with multiple pages
       // response has members count, next, previous, results
       var results = responseAsJson.results;
+      // Strips off the " County" suffix on all the results in place.
+      // Doing it not in place, or after coverting to object, may be tricky.
+      results.forEach(value => {
+        value.name = value.name.replace(' County', '');
+      });
       countyStories = arrayToObject(results, "name");
-      //TODO strip "County"
-      // console.log('countyStories', countyStories);
 
       return countyStories;
 
