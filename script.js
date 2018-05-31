@@ -426,8 +426,12 @@ function selectStateListener(e) {
   // debugSelectEvent(e); // consider preserving use call() to preserve "this"
 }
 
-
-function styleCounties() {
+/*
+ * 
+ * @param {string} state_name - The state with the counties to style.
+ */
+function styleCounties(state_name) {
+  /* Iterates through the counties*/
   var maxStories = 0;
   for (let county of results) {
     if (county.story_count > maxStories) {
