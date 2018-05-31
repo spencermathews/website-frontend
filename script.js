@@ -402,6 +402,15 @@ function selectStateListener(e) {
         storyElement.innerHTML = preview + "...";
         stories.appendChild(storyElement);
       }
+
+      // Loads county-level preview data.
+      getStatePreview(name)
+        .then(result => {
+          console.log(result);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   } else {
     info.innerHTML = "&nbsp;";
@@ -598,7 +607,8 @@ var countyStories;
 getStatePreview("California");
 
 function getStatePreview(state_name) {
-  fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
+  console.log('Fetching ' + state_name + '...');
+  return fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
     .then(function (response) {
       return response.json();
     })
@@ -609,6 +619,11 @@ function getStatePreview(state_name) {
       var results = responseAsJson.results;
       countyStories = arrayToObject(results, "name");
       //TODO strip "County"
+      // console.log('countyStories', countyStories);
+
+      return countyStories;
+
+      /* stuff below is ignored! */
 
       var maxStories = 0;
       for (let county of results) {
