@@ -603,9 +603,15 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     console.log(err);
   });
 
+// Stores state (per county) summary data keyed by (full) name
 var countyStories;
 getStatePreview("California");
 
+/*
+ * Retrieves county level preview for a given state.
+ * @param {string} state_name - State name, probably requires first letter to be capitalized.
+ * @returns {Promise} - Promise for countyStories object.
+ */
 function getStatePreview(state_name) {
   console.log('Fetching ' + state_name + '...');
   return fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
