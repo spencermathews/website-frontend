@@ -369,6 +369,7 @@ selectState.on("select", selectStateListener);
 
 /*
  * Event listener for state select interaction.
+ * Expects stateStories to be populated.
  */
 function selectStateListener(e) {
   // Populates #status
@@ -381,21 +382,27 @@ function selectStateListener(e) {
     e.deselected.length +
     " features)";
 
-  // Populates #info
+  /* Gets and clears output elements */
   var info = document.getElementById("info");
   info.innerHTML = "";
   let stories = document.getElementById("stories");
   stories.innerHTML = "";
+
+  /* Populates output elements with data from selected feature */
   var feature = e.selected[0];
-  // condition is legacy from example, can simplify
+  /* Conditioning on feature prevents error getting name when no features are selected.
+     Conditioning on stateStories[name] catches when state has no stories.
+     TODO remove redundant clearing of elements above and in else clause */
   if (feature) {
     let name = feature.get("name");
     if (stateStories[name] === undefined) {
       info.innerHTML = "0" + " stories<br>from " + name;
     } else {
+      // Populates #info in sidebar
       let storyCount = stateStories[name].story_count;
       info.innerHTML = storyCount + " stories<br>from " + name; //feature.getId()
 
+      // Populates story #preview in sidebar
       for (let preview of stateStories[name].preview) {
         let storyElement = document.createElement("div");
         storyElement.classList.add("preview");
@@ -538,6 +545,7 @@ selectCounty.on("select", selectCountyListener);
 
 /*
  * Event listener for county select interaction.
+ * Expects countyStories to be populated.
  */
 function selectCountyListener(e) {
   // Populates #info and #stories
@@ -545,8 +553,8 @@ function selectCountyListener(e) {
   info.innerHTML = "";
   let stories = document.getElementById("stories");
   stories.innerHTML = "";
+
   var feature = e.selected[0];
-  // condition is legacy from example, can simplify
   if (feature) {
     let name = feature.get("name");
     if (countyStories[name] === undefined) {
@@ -577,9 +585,10 @@ var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
  * Converts an array of objects to an object with property names based on some key in the array objects.
  * 
  * from https://medium.com/dailyjs/rewriting-javascript-converting-an-array-of-objects-to-an-object-ec579cafbfc7
+ * see similar trickery https://stackoverflow.com/q/14810506
  * 
  * @param {Object[]} arr
- * @param {String} keyField - The property by which to key the objects.
+ * @param {string} keyField - The property by which to key the objects.
  */
 const arrayToObject = (arr, keyField) =>
   Object.assign({}, ...arr.map(item => ({ [item[keyField]]: item })));
@@ -649,6 +658,8 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
 
 // Stores state (per county) summary data keyed by (full) name
 var countyStories;
+
+// test
 getStatePreview("California");
 
 /*
