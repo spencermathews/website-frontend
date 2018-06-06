@@ -85,7 +85,7 @@ var countyLayer = new ol.layer.Vector({
     return style;
   },
   minResolution: 200,
-  maxResolution: 1999
+  maxResolution: 20000
 });
 
 var key =
@@ -708,6 +708,9 @@ function onStateLayerChange(evt) {
       // console.log(feature.getId());
     })
   }
+
+  // Forces county source to load immediately by reducing it's maxResolution after the fact, seems to work but may not be guaranteed to.
+  countyLayer.setMaxResolution(1999);
 }
 
 // note features may not be available immediately, like features
