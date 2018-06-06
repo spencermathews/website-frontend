@@ -703,7 +703,12 @@ stateLayer.getSource().on("change", onStateLayerChange);
 function onStateLayerChange(evt) {
   var source = evt.target;
   console.log("stateLayer fired change!");
+  /* Checking for ready state is recommended pattern even though it seems redundant
+     State appeared to be ready the first time the change event was fired! */
   if (source.getState() === "ready") {
+    // Unlisten for change event since this should only happen once
+    stateLayer.getSource().un("change", onStateLayerChange);
+
     var numFeatures = source.getFeatures().length;
     console.log("Count after change: " + numFeatures);
   }
