@@ -690,6 +690,10 @@ function getStatePreview(state_name) {
 // See https://openlayers.org/en/latest/doc/faq.html#why-are-my-features-not-found-
 stateLayer.getSource().on("change", onStateLayerChange);
 
+/*
+ * Callback function for when state layer source is changed.
+ * Does not do anything unless source is in ready state.
+ */
 function onStateLayerChange(evt) {
   var source = evt.target;
   console.log("stateLayer fired change!");
@@ -702,10 +706,20 @@ function onStateLayerChange(evt) {
     var numFeatures = source.getFeatures().length;
     console.log("Count after change: " + numFeatures);
 
-    // Sets feature ids to state name
+    // Save fips code from feature into 'fips' property and sets id to state name (from 'name' property).
     source.forEachFeature(feature => {
+      try {
+        // Sets a new 'fips' property on the feature with value taken from id, strip 'US' prefix. Note Puerto Rico has 6 digits and no 'US' prefix.
+        feature.set('fips', feature.getId().replace(/^US/, ''));
+      } catch (e) {
+        // Continue even though some features e.g. 'Guam' don't have id set.
+        if (e instanceof TypeError) {
+          console.error(feature.get('name'), e.message);
+        }
+      }
+
+      // Copy state 'name' into feature id.
       feature.setId(feature.get("name"));
-      // console.log(feature.getId());
     })
   }
 
