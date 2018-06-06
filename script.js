@@ -72,14 +72,23 @@ var stateLayer = new ol.layer.Vector({
   maxResolution: 20000
 });
 
+/* Preload county layer so features are available even before maxResolution criteria is met.
+   Modeled after https://stackoverflow.com/q/33533911, but there may be a more clever way to contruct via promises */
+var countySource = new ol.source.Vector({ overlaps: false });
+fetch("https://cdn.rawgit.com/spencermathews/us-atlas/cbd1b078/us/10m.json")
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (responseAsJson) {
+    let features = (new ol.format.TopoJSON({ layers: ["counties"] })).readFeatures(responseAsJson);
+    countySource.addFeatures(features);
+  })
+  .catch(function (err) {
+    console.log(err);
+  });
+
 var countyLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: "https://cdn.rawgit.com/spencermathews/us-atlas/cbd1b078/us/10m.json",
-    format: new ol.format.TopoJSON({
-      layers: ["counties"]
-    }),
-    overlaps: false
-  }),
+  source: countySource,
   style: function (feature) {
     // style.getText().setText(feature.get("name"));
     return style;
