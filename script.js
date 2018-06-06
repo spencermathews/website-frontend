@@ -74,13 +74,6 @@ var stateLayer = new ol.layer.Vector({
 
 var countyLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
-    // url: "https://openlayers.org/en/v4.6.4/examples/data/topojson/us.json",
-    // will require work to get this one working, probably because of projection? but even this does not have names!?
-    // url: "https://unpkg.com/us-atlas@1.0.2/us/10m.json",
-    // url:
-    //   "https://spencermathews.github.io/us-data/geography/counties/California.topo.json",
-    // format: new ol.format.TopoJSON({
-    //   layers: ["California.geo"]
     url: "https://cdn.rawgit.com/spencermathews/us-atlas/cbd1b078/us/10m.json",
     format: new ol.format.TopoJSON({
       layers: ["counties"]
