@@ -711,6 +711,12 @@ function onStateLayerChange(evt) {
 
     var numFeatures = source.getFeatures().length;
     console.log("Count after change: " + numFeatures);
+
+    // Sets feature ids to state name
+    source.forEachFeature(feature => {
+      feature.setId(feature.get("name"));
+      // console.log(feature.getId());
+    })
   }
 }
 
