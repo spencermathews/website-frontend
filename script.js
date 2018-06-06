@@ -656,9 +656,6 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
 // Stores state (per county) summary data keyed by (full) name
 var countyStories;
 
-// test
-getStatePreview("California");
-
 /*
  * Retrieves county level preview for a given state.
  * @param {string} state_name - State name, probably requires first letter to be capitalized.
