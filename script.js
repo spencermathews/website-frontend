@@ -436,6 +436,7 @@ function selectStateListener(e) {
  * @param {Object} countyPreviews - Object containing county level previews keyed by county name, each should contain a story_count property.
  */
 function styleCounties(state_name, countyPreviews) {
+  console.log(state_name, countyPreviews);
 
   /* Computes largest number of stories in any one county */
   var maxStories = 0;
@@ -447,7 +448,39 @@ function styleCounties(state_name, countyPreviews) {
       }
     }
   }
-  console.log("maxStories (county):", maxStories);
+  console.log("maxStories (" + state_name + "):", maxStories);
+
+  let style = new ol.style.Style({
+    fill: new ol.style.Fill({
+      // color: "rgba(255, 0, 0, 1.0)"
+      color: "rgba(255, 255, 0, 1.0)"
+    }),
+    stroke: new ol.style.Stroke({
+      color: "#fff",
+      width: 1
+    }),
+    text: new ol.style.Text({
+      font: "12px Calibri,sans-serif",
+      fill: new ol.style.Fill({
+        color: "#000"
+      }),
+      stroke: new ol.style.Stroke({
+        color: "#f0f",
+        width: 3
+      })
+    })
+  });
+
+  //Iterates through each county in this state.
+  for (const [key, value] of Object.entries(countyPreviews)) {
+    // console.log(key, value);
+    let countyFeature = countyLayer.getSource().getFeatureById(key);
+    // console.log(countyFeature.getId());
+
+    countyFeature.setStyle(style);
+  }
+
+  return;
 
   // Sets style function for the layer
   // Note this is still OK even if features have not been populated from source
@@ -575,9 +608,21 @@ function selectCountyListener(e) {
     feature.setStyle(null);
 
     let name = feature.get("name");
+    // Gets current selected state.
+    // Or may be better to get directly from Select object.
     let state_name = currentStateFeature.get("name");
     console.log(name, state_name);
-    if (previews[state_name][name] === undefined) {
+    // TODO find a reliable way to make select work on boundaries and get correct state
+    let coordinate = e.mapBrowserEvent.coordinate;
+    let state = stateLayer.getSource().getFeaturesAtCoordinate(coordinate);
+    console.log('coordinate:');
+    state.forEach(feature => { console.log(feature.get('name')) })
+
+    // TODO consolidate state and county select interactions, possibly entirely but at least in terms of how they populate the sidebar,
+    // i.e. have them call the same function which prefers county
+
+    // TODO see about simplifying this if...else to a try...catch
+    if (previews[state_name] === undefined || previews[state_name][name] === undefined) {
       info.innerHTML = "0" + " stories<br>from " + name + " County";
     } else {
       let storyCount = previews[state_name][name].story_count;
