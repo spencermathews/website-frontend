@@ -688,20 +688,20 @@ function getStatePreview(state_name) {
 
 // Example of how to use source.getFeatures which may otherwise fail due to async loading
 // See https://openlayers.org/en/latest/doc/faq.html#why-are-my-features-not-found-
-stateLayer.getSource().on("change", onStateLayerChange);
+stateLayer.getSource().on("change", onStateSourceChange);
 
 /*
  * Callback function for when state layer source is changed.
  * Does not do anything unless source is in ready state.
  */
-function onStateLayerChange(evt) {
+function onStateSourceChange(evt) {
   var source = evt.target;
   console.log("stateLayer fired change!");
   /* Checking for ready state is recommended pattern even though it seems redundant
      State appeared to be ready the first time the change event was fired! */
   if (source.getState() === "ready") {
     // Unlisten for change event since this should only happen once
-    stateLayer.getSource().un("change", onStateLayerChange);
+    stateLayer.getSource().un("change", onStateSourceChange);
 
     var numFeatures = source.getFeatures().length;
     console.log("Count after change: " + numFeatures);
