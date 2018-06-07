@@ -727,6 +727,42 @@ function onStateSourceChange(evt) {
   countyLayer.setMaxResolution(1999);
 }
 
+countyLayer.getSource().on("change", onCountySourceChange);
+
+/*
+ * Callback function for when county layer source is changed.
+ * Does not do anything unless source is in ready state.
+ */
+function onCountySourceChange(evt) {
+  var source = evt.target;
+  console.log("countyLayer fired change!");
+  /* Checking for ready state is recommended pattern even though it seems redundant
+     since appeared to be ready the first time the change event was fired! */
+  if (source.getState() === "ready") {
+    // Unlisten for change event since this should only happen once.
+    countyLayer.getSource().un("change", onCountySourceChange);
+
+    var numFeatures = source.getFeatures().length;
+    console.log("Count after change: " + numFeatures);
+
+    // Save fips code from feature into 'fips' property and sets id from 'name' property).
+    source.forEachFeature(feature => {
+      try {
+        // Sets a new 'fips' property on the feature with value taken from id.
+        feature.set('fips', feature.getId());
+      } catch (e) {
+        // Catch error if feature id was not set.
+        if (e instanceof TypeError) {
+          console.error(feature.get('name'), e.message);
+        }
+      }
+
+      // Copy 'name' property into feature id.
+      feature.setId(feature.get("name"));
+    })
+  }
+}
+
 // note features may not be available immediately, like features
 // ? how do ready state and change event relate?
 // var stateSource = stateLayer.getSource();
