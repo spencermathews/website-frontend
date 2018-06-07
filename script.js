@@ -329,6 +329,10 @@ map.addControl(mousePosition); // can also .extend() the map controls collection
  * Select Interaction
  ********************************************************************************/
 
+// Stores references to currently selected features.
+var currentStateFeature;
+var currentCountyFeature;
+
 /* Adds pointerMove Select interation */
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
 var selectState = new ol.interaction.Select({
@@ -387,6 +391,8 @@ function selectStateListener(e) {
      Conditioning on stateStories[name] catches when state has no stories.
      TODO remove redundant clearing of elements above and in else clause */
   if (feature) {
+    currentStateFeature = feature;
+
     let name = feature.get("name");
     if (stateStories[name] === undefined) {
       info.innerHTML = "0" + " stories<br>from " + name;
@@ -413,6 +419,8 @@ function selectStateListener(e) {
         });
     }
   } else {
+    currentStateFeature = null;
+
     info.innerHTML = "&nbsp;";
   }
 
@@ -553,6 +561,8 @@ function selectCountyListener(e) {
 
   var feature = e.selected[0];
   if (feature) {
+    currentCountyFeature = feature;
+
     let name = feature.get("name");
     if (countyStories[name] === undefined) {
       info.innerHTML = "0" + " stories<br>from " + name;
@@ -568,6 +578,8 @@ function selectCountyListener(e) {
       }
     }
   } else {
+    currentCountyFeature = null;
+
     info.innerHTML = "&nbsp;";
   }
 }
