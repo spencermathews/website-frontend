@@ -404,7 +404,7 @@ function selectStateListener(e) {
       }
 
       // Loads county-level preview data.
-      getStatePreview(name)
+      getCountyPreview(name)
         .then(result => {
           console.log(result);
         })
@@ -661,14 +661,14 @@ var countyStories;
  * @param {string} state_name - State name, probably requires first letter to be capitalized.
  * @returns {Promise} - Promise for countyStories object.
  */
-function getStatePreview(state_name) {
+function getCountyPreview(state_name) {
   console.log('Fetching ' + state_name + '...');
   return fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
     .then(function (response) {
       return response.json();
     })
     .then(function (responseAsJson) {
-      console.log("getStatePreview", responseAsJson);
+      console.log("getCountyPreview", responseAsJson);
       // TODO deal with multiple pages
       // response has members count, next, previous, results
       var results = responseAsJson.results;
