@@ -412,7 +412,7 @@ function selectStateListener(e) {
       // Loads county-level preview data.
       getCountyPreview(name)
         .then(result => {
-          console.log(result);
+          styleCounties(name, result);
         })
         .catch(error => {
           console.log(error);
@@ -428,15 +428,23 @@ function selectStateListener(e) {
 }
 
 /*
+ * Styles the counties in a single state in countyLayer.
+ * 
+ * Assumes stateLayer and countyLayer variables in scope.
  * 
  * @param {string} state_name - The state with the counties to style.
+ * @param {Object} countyPreviews - Object containing county level previews keyed by county name, each should contain a story_count property.
  */
-function styleCounties(state_name) {
-  /* Iterates through the counties*/
+function styleCounties(state_name, countyPreviews) {
+
+  /* Computes largest number of stories in any one county */
   var maxStories = 0;
-  for (let county of results) {
-    if (county.story_count > maxStories) {
-      maxStories = county.story_count;
+  for (let county in countyPreviews) {
+    if (countyPreviews.hasOwnProperty(county)) {
+      story_count = countyPreviews[county].story_count;
+      if (story_count > maxStories) {
+        maxStories = story_count;
+      }
     }
   }
   console.log("maxStories (county):", maxStories);
@@ -550,7 +558,7 @@ selectCounty.on("select", selectCountyListener);
 
 /*
  * Event listener for county select interaction.
- * Expects countyStories to be populated.
+ * Expects previews to be populated.
  */
 function selectCountyListener(e) {
   // Populates #info and #stories
@@ -563,14 +571,19 @@ function selectCountyListener(e) {
   if (feature) {
     currentCountyFeature = feature;
 
-    let name = feature.get("name");
-    if (countyStories[name] === undefined) {
-      info.innerHTML = "0" + " stories<br>from " + name;
-    } else {
-      let storyCount = countyStories[name].story_count;
-      info.innerHTML = storyCount + " stories<br>from " + name; //feature.getId()
+    // Removes style from feature so it will be styled according to its layer, including through select interaction.
+    feature.setStyle(null);
 
-      for (let preview of countyStories[name].preview) {
+    let name = feature.get("name");
+    let state_name = currentStateFeature.get("name");
+    console.log(name, state_name);
+    if (previews[state_name][name] === undefined) {
+      info.innerHTML = "0" + " stories<br>from " + name + " County";
+    } else {
+      let storyCount = previews[state_name][name].story_count;
+      info.innerHTML = storyCount + " stories<br>from " + name + " County";
+
+      for (let preview of previews[state_name][name].preview) {
         let storyElement = document.createElement("div");
         storyElement.classList.add("preview");
         storyElement.innerHTML = preview + "...";
@@ -665,13 +678,13 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     console.log(err);
   });
 
-// Stores state (per county) summary data keyed by (full) name
-var countyStories;
+// Stores county level preview data keyed as .stateName.countyName.
+var previews = {};
 
 /*
  * Retrieves county level preview for a given state.
  * @param {string} state_name - State name, probably requires first letter to be capitalized.
- * @returns {Promise} - Promise for countyStories object.
+ * @returns {Promise} - Promise for countyPreviews object.
  */
 function getCountyPreview(state_name) {
   console.log('Fetching ' + state_name + '...');
@@ -689,9 +702,10 @@ function getCountyPreview(state_name) {
       results.forEach(value => {
         value.name = value.name.replace(' County', '');
       });
-      countyStories = arrayToObject(results, "name");
-
-      return countyStories;
+      let countyPreviews = arrayToObject(results, "name");
+      // Stores the county level preview in preview object keyed by state name
+      previews[state_name] = countyPreviews;
+      return countyPreviews;
     })
     .catch(function (err) {
       console.log(err);
