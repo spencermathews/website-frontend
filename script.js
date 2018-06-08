@@ -6,7 +6,7 @@
 
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
-    color: "rgba(255, 0, 0, 1.0)"
+    color: "#e4e4e4"
   }),
   stroke: new ol.style.Stroke({
     // color: "rgba(255, 0, 0, 0.6)",
@@ -66,6 +66,7 @@ var stateLayer = new ol.layer.Vector({
   // style: style,
   style: function (feature) {
     // style.getText().setText(feature.get("name"));
+    // console.log("styling state layer:", feature.getId());
     return style;
   },
   minResolution: 200,
@@ -82,6 +83,7 @@ var countyLayer = new ol.layer.Vector({
   }),
   style: function (feature) {
     // style.getText().setText(feature.get("name"));
+    // console.log("styling county layer:", feature.getId());
     return style;
   },
   minResolution: 200,
@@ -337,22 +339,13 @@ var currentCountyFeature;
 // what's weird is that after adding this select code (and before adding style to it) the interaction with featureOverlay improved such that after zooming to county level any mouse movement would select a county, whereas before the logic in displayFeatureInfo was incomplete and had to leave state first, note that going from county to state was fine since leaving county sufficed, I think it had something to do with the featureOverlay dominated.
 var selectState = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove,
-  // style: highlightStyle
-  // test how to manipulate style w stylefunctions
-  // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
-  style: function (feature) {
-    // highlightStyle.getText().setText(feature.get("name"));
-    return highlightStyle;
-  },
+  style: highlightStyle,
   layers: [stateLayer]
 });
 map.addInteraction(selectState);
 
 var selectCounty = new ol.interaction.Select({
   condition: ol.events.condition.pointerMove,
-  // style: highlightStyle
-  // test how to manipulate style w stylefunctions
-  // kind of works with us-data states.topo.json but only some states highlight text! since not all have name string? check?
   style: function (feature) {
     // highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
@@ -369,6 +362,7 @@ selectState.on("select", selectStateListener);
  * Expects stateStories to be populated.
  */
 function selectStateListener(e) {
+  console.log("state source fired select event");
   // Populates #status
   document.getElementById("status").innerHTML =
     "&nbsp;" +
@@ -410,13 +404,19 @@ function selectStateListener(e) {
       }
 
       // Loads county-level preview data.
-      getCountyPreview(name)
-        .then(result => {
-          styleCounties(name, result);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      // Checks if we have already loaded county level data for that state.
+      // TODO verify that this is good approach for checking.
+      if (previews[name] === undefined) {
+        getCountyPreview(name)
+          .then(result => {
+            styleCounties(name, result);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        console.log('skip fetching cached state', name);
+      }
     }
   } else {
     currentStateFeature = null;
@@ -436,7 +436,8 @@ function selectStateListener(e) {
  * @param {Object} countyPreviews - Object containing county level previews keyed by county name, each should contain a story_count property.
  */
 function styleCounties(state_name, countyPreviews) {
-  console.log(state_name, countyPreviews);
+  console.log('Styling counties in', state_name);
+  // console.log(countyPreviews);
 
   /* Computes largest number of stories in any one county */
   var maxStories = 0;
@@ -450,34 +451,69 @@ function styleCounties(state_name, countyPreviews) {
   }
   console.log("maxStories (" + state_name + "):", maxStories);
 
-  let style = new ol.style.Style({
-    fill: new ol.style.Fill({
-      // color: "rgba(255, 0, 0, 1.0)"
-      color: "rgba(255, 255, 0, 1.0)"
-    }),
-    stroke: new ol.style.Stroke({
-      color: "#fff",
-      width: 1
-    }),
-    text: new ol.style.Text({
-      font: "12px Calibri,sans-serif",
-      fill: new ol.style.Fill({
-        color: "#000"
-      }),
-      stroke: new ol.style.Stroke({
-        color: "#f0f",
-        width: 3
-      })
-    })
-  });
+  /* Lightens or darkens hex colors.
+   * Input exactly 7 characters e.g. #FF0000 and percent -1.0 (pure black) to 1.0 (pure white)
+   * Version 2 Hex from https://stackoverflow.com/q/5560248/2762964
+   */
+  function shadeColor2(color, percent) {
+    var f = parseInt(color.slice(1), 16), t = percent < 0 ? 0 : 255, p = percent < 0 ? percent * -1 : percent, R = f >> 16, G = f >> 8 & 0x00FF, B = f & 0x0000FF;
+    return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+  }
+
+  // let oldFill = style.getFill();
+  // style.setFill(newFill);
 
   //Iterates through each county in this state.
   for (const [key, value] of Object.entries(countyPreviews)) {
     // console.log(key, value);
+    // Gets corresponding vector feature.
     let countyFeature = countyLayer.getSource().getFeatureById(key);
     // console.log(countyFeature.getId());
+    // console.log(countyFeature.getStyle());
+    // console.log(countyFeature.getStyleFunction());
+    // console.log(countyFeature.getStyle().getFill().getColor());
+
+    let style = new ol.style.Style({
+      fill: new ol.style.Fill({
+        // color: "rgba(255, 0, 0, 1.0)"
+        color: "rgba(255, 255, 0, 1.0)"
+      }),
+      stroke: new ol.style.Stroke({
+        color: "#fff",
+        width: 1
+      }),
+      text: new ol.style.Text({
+        font: "12px Calibri,sans-serif",
+        fill: new ol.style.Fill({
+          color: "#000"
+        }),
+        stroke: new ol.style.Stroke({
+          color: "#f0f",
+          width: 3
+        })
+      })
+    });
+
+    // console.log(style.getFill().getColor());
+
+    let numStories = value.story_count;
+    let newFill;
+    if (numStories / maxStories > 0.8) {
+      fillColor = colors[0];
+    } else if (numStories / maxStories > 0.6) {
+      fillColor = colors[1];
+    } else if (numStories / maxStories > 0.4) {
+      fillColor = colors[2];
+    } else {
+      fillColor = colors[3];
+    }
+    // console.log('fill:', fillColor);
+    style.getFill().setColor(fillColor);
+    // console.log(style.getFill().getColor());
+    // style.getFill().setColor('#000000');
 
     countyFeature.setStyle(style);
+    // console.log(countyFeature.getStyle().getFill().getColor());
   }
 
   return;
@@ -594,6 +630,8 @@ selectCounty.on("select", selectCountyListener);
  * Expects previews to be populated.
  */
 function selectCountyListener(e) {
+  // console.log("county source fired select event");
+
   // Populates #info and #stories
   var info = document.getElementById("info");
   info.innerHTML = "";
@@ -604,19 +642,16 @@ function selectCountyListener(e) {
   if (feature) {
     currentCountyFeature = feature;
 
-    // Removes style from feature so it will be styled according to its layer, including through select interaction.
-    feature.setStyle(null);
-
     let name = feature.get("name");
     // Gets current selected state.
-    // Or may be better to get directly from Select object.
+    // Or may be better to get directly from Select object: select.getFeatures().getArray().indexOf(this)?
     let state_name = currentStateFeature.get("name");
-    console.log(name, state_name);
+    // console.log(name, state_name);
     // TODO find a reliable way to make select work on boundaries and get correct state
     let coordinate = e.mapBrowserEvent.coordinate;
     let state = stateLayer.getSource().getFeaturesAtCoordinate(coordinate);
-    console.log('coordinate:');
-    state.forEach(feature => { console.log(feature.get('name')) })
+    // console.log('coordinate:');
+    // state.forEach(feature => { console.log(feature.get('name')) })
 
     // TODO consolidate state and county select interactions, possibly entirely but at least in terms of how they populate the sidebar,
     // i.e. have them call the same function which prefers county
@@ -738,7 +773,7 @@ function getCountyPreview(state_name) {
       return response.json();
     })
     .then(function (responseAsJson) {
-      console.log("getCountyPreview", responseAsJson);
+      // console.log("getCountyPreview", responseAsJson);
       // TODO deal with multiple pages
       // response has members count, next, previous, results
       var results = responseAsJson.results;
