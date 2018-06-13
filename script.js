@@ -84,6 +84,8 @@ var countyLayer = new ol.layer.Vector({
   style: function (feature) {
     // style.getText().setText(feature.get("name"));
     // console.log("styling county layer:", feature.getId());
+    // Sets default fill on county layer to least data map color, applies to unstyled features, necessary since style fill is modified in state layer style function.
+    style.getFill().setColor(colors[4]);
     return style;
   },
   minResolution: 200,
@@ -497,15 +499,16 @@ function styleCounties(state_name, countyPreviews) {
     // console.log(style.getFill().getColor());
 
     let numStories = value.story_count;
-    let newFill;
     if (numStories / maxStories > 0.8) {
       fillColor = colors[0];
     } else if (numStories / maxStories > 0.6) {
       fillColor = colors[1];
     } else if (numStories / maxStories > 0.4) {
       fillColor = colors[2];
-    } else {
+    } else if (numStories / maxStories > 0.2) {
       fillColor = colors[3];
+    } else {
+      fillColor = colors[4];
     }
     // console.log('fill:', fillColor);
     style.getFill().setColor(fillColor);
