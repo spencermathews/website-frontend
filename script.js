@@ -641,6 +641,7 @@ function selectCountyListener(e) {
   let stories = document.getElementById("stories");
   stories.innerHTML = "";
 
+  // Gets the selected county feature, returns the first (top?) if there are multiple (there shouldn't be).
   var feature = e.selected[0];
   if (feature) {
     currentCountyFeature = feature;
