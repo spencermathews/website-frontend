@@ -753,15 +753,9 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
       for (let state of results) {
         // Interates through all states with preview data to find preview data for this feature, if it exists.
         if (name === state.name) {
-          if (state.story_count > 9) {
-            style.getFill().setColor(colors[0]);
-          } else if (state.story_count > 6) {
-            style.getFill().setColor(colors[1]);
-          } else if (state.story_count > 3) {
-            style.getFill().setColor(colors[2]);
-          } else {
-            style.getFill().setColor(colors[3]);
-          }
+          // Computes appropriate fill color.
+          const fillColor = computeColor(state.story_count, maxStories);
+          style.getFill().setColor(fillColor);
           break;
         }
       }
