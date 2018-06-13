@@ -699,11 +699,14 @@ var colors = ["#ee9231", "#fbaa39", "#fcc955", "#f4ec94", "#e4e4e4"];
 const arrayToObject = (arr, keyField) =>
   Object.assign({}, ...arr.map(item => ({ [item[keyField]]: item })));
 
-// Stores national (per state) summary data keyed by (full) name
+// Stores national (per state) summary data keyed by (full) name.
 var stateStories;
 
-/* Gets state story counts via nation level preview. */
-// should this come at start or end of js?
+/* Gets state level preview for the entire nation and sets style function for stateLayer.
+   Assumes stateLayer global variable is defined.
+   The features of stateLayer need not be fully loaded in order to define a style function (but would need to be to directly style each feature).
+   Style function assumes style, and color global variables.
+   Sets the stateStories global variable. */
 fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
   .then(function (response) {
     return response.json();
@@ -711,11 +714,13 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
   .then(function (responseAsJson) {
     console.log(responseAsJson);
     // TODO deal with multiple pages
-    // response has members count, next, previous, results
-    var results = responseAsJson.results;
+    // Response has members count, next, previous, results.
+    let results = responseAsJson.results;
+    // Converts results, an array of objects, into an object keyed by the name property of each object element.
     stateStories = arrayToObject(results, "name");
 
-    var maxStories = 0;
+    // Computes the maximum number of stories in any one state.
+    let maxStories = 0;
     for (let state of results) {
       if (state.story_count > maxStories) {
         maxStories = state.story_count;
@@ -723,23 +728,19 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     }
     console.log("maxStories (state):", maxStories);
 
-    // Sets style function for the layer
-    // Note this is still OK even if features have not been populated from source
+    /* Sets style function for the layer.
+       Note this is still OK even if features have not been populated from source */
     stateLayer.setStyle(function (feature) {
       let name = feature.get("name");
-      // console.log(name);
       // style.getText().setText(name);
       style.getText().setText("");
 
       // Sets default color in case state fails to match i.e. there is no preview data for it.
       style.getFill().setColor(colors[4]);
-      // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
+      // TODO find a more clever/efficient way of matching, maybe create a dict from results.
       for (let state of results) {
+        // Interates through all states with preview data to find preview data for this feature, if it exists.
         if (name === state.name) {
-          // console.log(state.name, state.story_count, maxStories);
-          // is there a smarter way?
-          // TODO make actual quintile/quantile
-          // TODO where is Utah? make sure we match all
           if (state.story_count > 9) {
             style.getFill().setColor(colors[0]);
           } else if (state.story_count > 6) {
@@ -747,7 +748,6 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
           } else if (state.story_count > 3) {
             style.getFill().setColor(colors[2]);
           } else {
-            // this else may not be necessary since we set default above
             style.getFill().setColor(colors[3]);
           }
           break;
