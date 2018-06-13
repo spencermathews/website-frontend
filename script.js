@@ -731,10 +731,10 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
       // style.getText().setText(name);
       style.getText().setText("");
 
+      // Sets default color in case state fails to match i.e. there is no preview data for it.
+      style.getFill().setColor(colors[4]);
       // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
       for (let state of results) {
-        // set default color in case state fails to match
-        style.getFill().setColor(colors[3]);
         if (name === state.name) {
           // console.log(state.name, state.story_count, maxStories);
           // is there a smarter way?
