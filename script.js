@@ -465,7 +465,7 @@ function styleCounties(state_name, countyPreviews) {
   // let oldFill = style.getFill();
   // style.setFill(newFill);
 
-  //Iterates through each county in this state.
+  //Iterates through each county in county preview.
   for (const [key, value] of Object.entries(countyPreviews)) {
     // console.log(key, value);
     // Gets corresponding vector feature.
