@@ -430,6 +430,27 @@ function selectStateListener(e) {
 }
 
 /*
+ * Calculates fill color based on number of stories.
+ * References colors[] global.
+ */
+function computeColor(numStories, maxStories) {
+  let fillColor;
+  const ratio = numStories / maxStories;
+  if (ratio > 0.8) {
+    fillColor = colors[0];
+  } else if (ratio > 0.6) {
+    fillColor = colors[1];
+  } else if (ratio > 0.4) {
+    fillColor = colors[2];
+  } else if (ratio > 0.2) {
+    fillColor = colors[3];
+  } else {
+    fillColor = colors[4];
+  }
+  return fillColor;
+}
+
+/*
  * Styles the counties in a single state in countyLayer.
  * 
  * Assumes stateLayer and countyLayer variables in scope.
@@ -498,18 +519,9 @@ function styleCounties(state_name, countyPreviews) {
 
     // console.log(style.getFill().getColor());
 
-    let numStories = value.story_count;
-    if (numStories / maxStories > 0.8) {
-      fillColor = colors[0];
-    } else if (numStories / maxStories > 0.6) {
-      fillColor = colors[1];
-    } else if (numStories / maxStories > 0.4) {
-      fillColor = colors[2];
-    } else if (numStories / maxStories > 0.2) {
-      fillColor = colors[3];
-    } else {
-      fillColor = colors[4];
-    }
+    // Computes appropriate fill color.
+    const fillColor = computeColor(value.story_count, maxStories);
+
     // console.log('fill:', fillColor);
     style.getFill().setColor(fillColor);
     // console.log(style.getFill().getColor());
