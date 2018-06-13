@@ -436,13 +436,13 @@ function selectStateListener(e) {
 function computeColor(numStories, maxStories) {
   let fillColor;
   const ratio = numStories / maxStories;
-  if (ratio > 0.8) {
+  if (ratio > 0.75) {
     fillColor = colors[0];
-  } else if (ratio > 0.6) {
+  } else if (ratio > 0.5) {
     fillColor = colors[1];
-  } else if (ratio > 0.4) {
+  } else if (ratio > 0.25) {
     fillColor = colors[2];
-  } else if (ratio > 0.2) {
+  } else if (ratio > 0) {
     fillColor = colors[3];
   } else {
     fillColor = colors[4];
