@@ -747,16 +747,18 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
       // style.getText().setText(name);
       style.getText().setText("");
 
-      // Sets default color in case state fails to match i.e. there is no preview data for it.
-      style.getFill().setColor(colors[4]);
-      // TODO find a more clever/efficient way of matching, maybe create a dict from results.
-      for (let state of results) {
-        // Interates through all states with preview data to find preview data for this feature, if it exists.
-        if (name === state.name) {
-          // Computes appropriate fill color.
-          const fillColor = computeColor(state.story_count, maxStories);
-          style.getFill().setColor(fillColor);
-          break;
+      try {
+        // Gets preview belonging to this feature/state, if it exists, and sets fill color appropriately.
+        const state = stateStories[name];
+        const fillColor = computeColor(state.story_count, maxStories);
+        style.getFill().setColor(fillColor);
+      } catch (e) {
+        if (e instanceof TypeError) {
+          // Sets default color in case state fails to match i.e. there is no preview data for it.
+          style.getFill().setColor(colors[4]);
+          console.error(name, e.message);
+        } else {
+          throw e;
         }
       }
       return style;
