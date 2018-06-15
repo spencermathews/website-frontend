@@ -740,27 +740,34 @@ fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
     }
     console.log("maxStories (state):", maxStories);
 
-    /* Sets style function for the layer.
-       Note this is still OK even if features have not been populated from source */
-    stateLayer.setStyle(function (feature) {
+    /* Computes fillColor for each feature based on story_count and stores it on the feature in a fillColor property.
+       Note that this approach requires features to be loaded!
+       TODO ensure features are loaded */
+    stateLayer.getSource().forEachFeature(feature => {
       let name = feature.get("name");
-      // style.getText().setText(name);
-      style.getText().setText("");
-
       try {
         // Gets preview belonging to this feature/state, if it exists, and sets fill color appropriately.
         const state = stateStories[name];
         const fillColor = computeColor(state.story_count, maxStories);
-        style.getFill().setColor(fillColor);
+        // Sets fillColor property, assumed not to already exist.
+        feature.set('fillColor', fillColor);
       } catch (e) {
         if (e instanceof TypeError) {
           // Sets default color in case state fails to match i.e. there is no preview data for it.
-          style.getFill().setColor(colors[4]);
+          feature.set('fillColor', colors[4]);
           console.error(name, e.message);
         } else {
           throw e;
         }
       }
+    });
+
+    /* Sets style function for the layer.
+       Note this is still OK even if features have not been populated from source */
+    stateLayer.setStyle(function (feature) {
+      style.getText().setText("");
+      // console.log('style!!!', feature, feature.get('fillColor'));
+      style.getFill().setColor(feature.get('fillColor'));
       return style;
     });
     // stateLayer.setStyle(undefined); // use default style
