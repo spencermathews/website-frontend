@@ -719,63 +719,65 @@ var stateStories;
    The features of stateLayer need not be fully loaded in order to define a style function (but would need to be to directly style each feature).
    Style function assumes style, and color global variables.
    Sets the stateStories global variable. */
-fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (responseAsJson) {
-    console.log(responseAsJson);
-    // TODO deal with multiple pages
-    // Response has members count, next, previous, results.
-    let results = responseAsJson.results;
-    // Converts results, an array of objects, into an object keyed by the name property of each object element.
-    stateStories = arrayToObject(results, "name");
+function getStatePreviews() {
+  fetch("https://app.storiesofsolidarity.org/api/state/?page=1")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (responseAsJson) {
+      console.log(responseAsJson);
+      // TODO deal with multiple pages
+      // Response has members count, next, previous, results.
+      let results = responseAsJson.results;
+      // Converts results, an array of objects, into an object keyed by the name property of each object element.
+      stateStories = arrayToObject(results, "name");
 
-    // Computes the maximum number of stories in any one state.
-    let maxStories = 0;
-    for (let state of results) {
-      if (state.story_count > maxStories) {
-        maxStories = state.story_count;
-      }
-    }
-    console.log("maxStories (state):", maxStories);
-
-    /* Computes fillColor for each feature based on story_count and stores it on the feature in a fillColor property.
-       Note that this approach requires features to be loaded!
-       TODO ensure features are loaded */
-    stateLayer.getSource().forEachFeature(feature => {
-      let name = feature.get("name");
-      try {
-        // Gets preview belonging to this feature/state, if it exists, and sets fill color appropriately.
-        const state = stateStories[name];
-        const fillColor = computeColor(state.story_count, maxStories);
-        // Sets fillColor property, assumed not to already exist.
-        feature.set('fillColor', fillColor);
-      } catch (e) {
-        if (e instanceof TypeError) {
-          // Sets default color in case state fails to match i.e. there is no preview data for it.
-          feature.set('fillColor', colors[4]);
-          console.error(name, e.message);
-        } else {
-          throw e;
+      // Computes the maximum number of stories in any one state.
+      let maxStories = 0;
+      for (let state of results) {
+        if (state.story_count > maxStories) {
+          maxStories = state.story_count;
         }
       }
-    });
+      console.log("maxStories (state):", maxStories);
 
-    /* Sets style function for the layer.
-       Note this is still OK even if features have not been populated from source */
-    stateLayer.setStyle(function (feature) {
-      style.getText().setText("");
-      // console.log('style!!!', feature, feature.get('fillColor'));
-      style.getFill().setColor(feature.get('fillColor'));
-      return style;
+      /* Computes fillColor for each feature based on story_count and stores it on the feature in a fillColor property.
+         Note that this approach requires features to be loaded!
+         TODO ensure features are loaded */
+      stateLayer.getSource().forEachFeature(feature => {
+        let name = feature.get("name");
+        try {
+          // Gets preview belonging to this feature/state, if it exists, and sets fill color appropriately.
+          const state = stateStories[name];
+          const fillColor = computeColor(state.story_count, maxStories);
+          // Sets fillColor property, assumed not to already exist.
+          feature.set('fillColor', fillColor);
+        } catch (e) {
+          if (e instanceof TypeError) {
+            // Sets default color in case state fails to match i.e. there is no preview data for it.
+            feature.set('fillColor', colors[4]);
+            console.error(name, e.message);
+          } else {
+            throw e;
+          }
+        }
+      });
+
+      /* Sets style function for the layer.
+         Note this is still OK even if features have not been populated from source */
+      stateLayer.setStyle(function (feature) {
+        style.getText().setText("");
+        // console.log('style!!!', feature, feature.get('fillColor'));
+        style.getFill().setColor(feature.get('fillColor'));
+        return style;
+      });
+      // stateLayer.setStyle(undefined); // use default style
+      // stateLayer.setStyle(null); // only features with style are shown
+    })
+    .catch(function (err) {
+      console.log(err);
     });
-    // stateLayer.setStyle(undefined); // use default style
-    // stateLayer.setStyle(null); // only features with style are shown
-  })
-  .catch(function (err) {
-    console.log(err);
-  });
+}
 
 // Stores county level preview data keyed as .stateName.countyName.
 var previews = {};
@@ -849,6 +851,8 @@ function onStateSourceChange(evt) {
       // Forces county source to load immediately by reducing it's maxResolution after the fact, seems to work but may not be guaranteed to.
       countyLayer.setMaxResolution(1999);
 
+      // Initiates loading of state-level previews.
+      getStatePreviews();
     })
   }
 }
