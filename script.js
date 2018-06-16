@@ -830,11 +830,12 @@ function onStateSourceChange(evt) {
 
       // Copy state 'name' into feature id.
       feature.setId(feature.get("name"));
+
+      // Forces county source to load immediately by reducing it's maxResolution after the fact, seems to work but may not be guaranteed to.
+      countyLayer.setMaxResolution(1999);
+
     })
   }
-
-  // Forces county source to load immediately by reducing it's maxResolution after the fact, seems to work but may not be guaranteed to.
-  countyLayer.setMaxResolution(1999);
 }
 
 countyLayer.getSource().on("change", onCountySourceChange);
