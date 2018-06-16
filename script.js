@@ -532,39 +532,6 @@ function styleCounties(state_name, countyPreviews) {
   }
 
   return;
-
-  // Sets style function for the layer
-  // Note this is still OK even if features have not been populated from source
-  countyLayer.setStyle(function (feature) {
-    let name = feature.get("name");
-    // console.log(name);
-    // style.getText().setText(name);
-    style.getText().setText("");
-
-    // SOMETIME find a more clever/efficient way of matching, maybe create a dict from results
-    for (let county of results) {
-      // set default color in case state fails to match
-      style.getFill().setColor(colors[3]);
-      if (name === county.name) {
-        // console.log(state.name, state.story_count, maxStories);
-        // is there a smarter way?
-        // TODO make actual quintile/quantile
-        // TODO where is Utah? make sure we match all
-        if (county.story_count > 9) {
-          style.getFill().setColor(colors[0]);
-        } else if (county.story_count > 6) {
-          style.getFill().setColor(colors[1]);
-        } else if (county.story_count > 3) {
-          style.getFill().setColor(colors[2]);
-        } else {
-          // this else may not be necessary since we set default above
-          style.getFill().setColor(colors[3]);
-        }
-        break;
-      }
-    }
-    return style;
-  });
 }
 
 function debugSelectEvent(e) {
