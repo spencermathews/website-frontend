@@ -819,7 +819,7 @@ function onStateSourceChange(evt) {
       countyLayer.setMaxResolution(1999);
 
       // Initiates loading of state-level previews.
-      getStatePreviews();
+      // getStatePreviews();
     })
   }
 }
@@ -859,6 +859,32 @@ function onCountySourceChange(evt) {
     })
   }
 }
+
+function getFips() {
+  return fetch("https://app.storiesofsolidarity.org/api/county/?state_name=" + state_name)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (responseAsJson) {
+      // console.log("getCountyPreview", responseAsJson);
+      // TODO deal with multiple pages
+      // response has members count, next, previous, results
+      var results = responseAsJson.results;
+      // Strips off the " County" suffix on all the results in place.
+      // Doing it not in place, or after coverting to object, may be tricky.
+      results.forEach(value => {
+        value.name = value.name.replace(' County', '');
+      });
+      let countyPreviews = arrayToObject(results, "name");
+      // Stores the county level preview in preview object keyed by state name
+      previews[state_name] = countyPreviews;
+      return countyPreviews;
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
 
 // note features may not be available immediately, like features
 // ? how do ready state and change event relate?
