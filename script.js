@@ -453,7 +453,7 @@ function styleCounties(state_name, countyPreviews) {
   let style = new ol.style.Style({
     fill: new ol.style.Fill({
       // color: "rgba(255, 0, 0, 1.0)"
-      color: "rgba(255, 255, 0, 1.0)"
+      color: "rgba(0, 255, 0, 1.0)"
     }),
     stroke: new ol.style.Stroke({
       color: "#fff",
